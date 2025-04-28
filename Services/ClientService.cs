@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Collections.Generic; // pour List<Client>
 using TransConnect.Models;
+using System.Runtime.CompilerServices;
 
 namespace Transconnect.Services
 {
@@ -29,7 +30,6 @@ namespace Transconnect.Services
         }
         public void AjouterClient(Client client, List<Client> ClientList)
         {
-            // Vérification de l'existence du client
             foreach (Client c in ClientList)
             {
                 if (c.NumeroSS == client.NumeroSS)
@@ -42,7 +42,6 @@ namespace Transconnect.Services
         }
          public void SupprimerClient(Client client, List<Client> ClientList)
         {
-            // Vérification de l'existence du client
             if (!ClientList.Contains(client))
             {
                 throw new Exception("Le client n'existe pas.");
@@ -53,7 +52,6 @@ namespace Transconnect.Services
 
         public DataView trierClientsParNom(DataTable dfClient)
         {
-            // Tri par Nom
             DataView vueParNom = dfClient.DefaultView;
             vueParNom.Sort = "Nom ASC";
             return vueParNom;
@@ -61,7 +59,6 @@ namespace Transconnect.Services
 
         public DataView trierClientsParMontant(DataTable dfClient)
         {
-            // Tri par Montant
             DataView vueParMontant = dfClient.DefaultView;
             vueParMontant.Sort = "Montant Achats Cumulés DESC";
             return vueParMontant;
@@ -69,10 +66,32 @@ namespace Transconnect.Services
 
         public DataView trierClientsParVille(DataTable dfClient)
         {
-            // Tri par Ville
             DataView vueParVille = dfClient.DefaultView;
             vueParVille.Sort = "Adresse Postale ASC";
             return vueParVille;
+        }
+
+        public DataView trierClientsParDateNaissance(DataTable dfClient)
+        {
+            DataView vueParDateNaissance = dfClient.DefaultView;
+            vueParDateNaissance.Sort = "Date de Naissance ASC";
+            return vueParDateNaissance;
+        }
+
+        public void modifierClient(Client client, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, List<Client> ClientList)
+        {
+            if (!ClientList.Contains(client))
+            {
+                throw new Exception("Le client n'existe pas.");
+            }
+
+            client.NumeroSS = numeroSS;
+            client.Nom = nom;
+            client.Prenom = prenom;
+            client.DateNaissance = dateNaissance;
+            client.AdressePostale = adressePostale;
+            client.AdresseMail = adresseMail;
+            client.Telephone = telephone;
         }
     }
 }
