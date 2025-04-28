@@ -36,3 +36,10 @@ C:\Users\Hilai\Documents\GitHub\TransConnect\obj\Debug\net8.0\refint\TransConnec
 C:\Users\Hilai\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.pdb
 C:\Users\Hilai\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.genruntimeconfig.cache
 C:\Users\Hilai\Documents\GitHub\TransConnect\obj\Debug\net8.0\ref\TransConnect.dll
+C:\Users\maxmo\Documents\GitHub\TransConnect\bin\Debug\net8.0\TransConnect.exe
+C:\Users\maxmo\Documents\GitHub\TransConnect\bin\Debug\net8.0\TransConnect.deps.json
+C:\Users\maxmo\Documents\GitHub\TransConnect\bin\Debug\net8.0\TransConnect.runtimeconfig.json
+C:\Users\maxmo\Documents\GitHub\TransConnect\bin\Debug\net8.0\TransConnect.dll
+C:\Users\maxmo\Documents\GitHub\TransConnect\bin\Debug\net8.0\TransConnect.pdb
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.genruntimeconfig.cache
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\ref\TransConnect.dll

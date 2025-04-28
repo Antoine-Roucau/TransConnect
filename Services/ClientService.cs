@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Collections.Generic; // pour List<Client>
 using TransConnect.Models;
+using System.Runtime.CompilerServices;
 
 namespace Transconnect.Services
 {
@@ -25,18 +26,72 @@ namespace Transconnect.Services
             {
                 dfClient.Rows.Add(c.NumeroSS, c.Nom, c.Prenom, c.DateNaissance, c.AdressePostale, c.AdresseMail, c.Telephone, c.MontantTotalAchats);
             }
+            return dfClient;
+        }
+        public void AjouterClient(Client client, List<Client> ClientList)
+        {
+            foreach (Client c in ClientList)
+            {
+                if (c.NumeroSS == client.NumeroSS)
+                {
+                    throw new Exception("Le client existe déjà.");
+                }
+            }
 
-            // Tri par Nom
+            ClientList.Add(client);
+        }
+         public void SupprimerClient(Client client, List<Client> ClientList)
+        {
+            if (!ClientList.Contains(client))
+            {
+                throw new Exception("Le client n'existe pas.");
+            }
+
+            ClientList.Remove(client);
+        }
+
+        public DataView trierClientsParNom(DataTable dfClient)
+        {
             DataView vueParNom = dfClient.DefaultView;
             vueParNom.Sort = "Nom ASC";
-            DataTable dfClientTrierParNom = vueParNom.ToTable();
+            return vueParNom;
+        }
 
-            // Tri par Montant
+        public DataView trierClientsParMontant(DataTable dfClient)
+        {
             DataView vueParMontant = dfClient.DefaultView;
             vueParMontant.Sort = "Montant Achats Cumulés DESC";
-            DataTable dfClientTrieParMontant = vueParMontant.ToTable();
+            return vueParMontant;
+        }
 
-            return dfClientTrierParNom;
+        public DataView trierClientsParVille(DataTable dfClient)
+        {
+            DataView vueParVille = dfClient.DefaultView;
+            vueParVille.Sort = "Adresse Postale ASC";
+            return vueParVille;
+        }
+
+        public DataView trierClientsParDateNaissance(DataTable dfClient)
+        {
+            DataView vueParDateNaissance = dfClient.DefaultView;
+            vueParDateNaissance.Sort = "Date de Naissance ASC";
+            return vueParDateNaissance;
+        }
+
+        public void modifierClient(Client client, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, List<Client> ClientList)
+        {
+            if (!ClientList.Contains(client))
+            {
+                throw new Exception("Le client n'existe pas.");
+            }
+
+            client.NumeroSS = numeroSS;
+            client.Nom = nom;
+            client.Prenom = prenom;
+            client.DateNaissance = dateNaissance;
+            client.AdressePostale = adressePostale;
+            client.AdresseMail = adresseMail;
+            client.Telephone = telephone;
         }
     }
 }
