@@ -231,6 +231,12 @@ namespace TransConnect.Data
             visualiseur.AfficherGraphe();
         }
 
+        public void AfficherGrapheSalarieGraphique()
+        {
+            var visualiseur = new OrganigrammeVisualiseur(grapheSalarie);
+            visualiseur.AfficherOrganigramme();
+        }
+
         #endregion
     }
 }
