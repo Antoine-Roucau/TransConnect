@@ -8,7 +8,7 @@ namespace Transconnect.Services
 {
     public class ClientService
     {
-        public DataTable GetClientsTriés(List<Client> ClientList)
+        public DataTable GetClientsTries(List<Client> clientList)
         {
             // Création du Dataframe
             DataTable dfClient = new DataTable();
@@ -22,15 +22,15 @@ namespace Transconnect.Services
             dfClient.Columns.Add("Montant Achats Cumulés", typeof(decimal));
 
             // Remplissage du Dataframe
-            foreach (Client c in ClientList)
+            foreach (Client c in clientList)
             {
                 dfClient.Rows.Add(c.NumeroSS, c.Nom, c.Prenom, c.DateNaissance, c.AdressePostale, c.AdresseMail, c.Telephone, c.MontantTotalAchats);
             }
             return dfClient;
         }
-        public void AjouterClient(Client client, List<Client> ClientList)
+        public void AjouterClient(Client client, List<Client> clientList)
         {
-            foreach (Client c in ClientList)
+            foreach (Client c in clientList)
             {
                 if (c.NumeroSS == client.NumeroSS)
                 {
@@ -38,49 +38,49 @@ namespace Transconnect.Services
                 }
             }
 
-            ClientList.Add(client);
+            clientList.Add(client);
         }
-         public void SupprimerClient(Client client, List<Client> ClientList)
+         public void SupprimerClient(Client client, List<Client> clientList)
         {
-            if (!ClientList.Contains(client))
+            if (!clientList.Contains(client))
             {
                 throw new Exception("Le client n'existe pas.");
             }
 
-            ClientList.Remove(client);
+            clientList.Remove(client);
         }
 
-        public DataView trierClientsParNom(DataTable dfClient)
+        public DataView TrierClientsParNom(DataTable dfClient)
         {
             DataView vueParNom = dfClient.DefaultView;
             vueParNom.Sort = "Nom ASC";
             return vueParNom;
         }
 
-        public DataView trierClientsParMontant(DataTable dfClient)
+        public DataView TrierClientsParMontant(DataTable dfClient)
         {
             DataView vueParMontant = dfClient.DefaultView;
             vueParMontant.Sort = "Montant Achats Cumulés DESC";
             return vueParMontant;
         }
 
-        public DataView trierClientsParVille(DataTable dfClient)
+        public DataView TrierClientsParVille(DataTable dfClient)
         {
             DataView vueParVille = dfClient.DefaultView;
             vueParVille.Sort = "Adresse Postale ASC";
             return vueParVille;
         }
 
-        public DataView trierClientsParDateNaissance(DataTable dfClient)
+        public DataView TrierClientsParDateNaissance(DataTable dfClient)
         {
             DataView vueParDateNaissance = dfClient.DefaultView;
             vueParDateNaissance.Sort = "Date de Naissance ASC";
             return vueParDateNaissance;
         }
 
-        public void modifierClient(Client client, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, List<Client> ClientList)
+        public void ModifierClient(Client client, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, List<Client> clientList)
         {
-            if (!ClientList.Contains(client))
+            if (!clientList.Contains(client))
             {
                 throw new Exception("Le client n'existe pas.");
             }
@@ -94,9 +94,9 @@ namespace Transconnect.Services
             client.Telephone = telephone;
         }
 
-        public Client GetClientByNumeroSS(string numeroSS, List<Client> ClientList)
+        public Client TouverClientParNumeroSS(string numeroSS, List<Client> clientList)
         {
-            foreach (Client c in ClientList)
+            foreach (Client c in clientList)
             {
                 if (c.NumeroSS == numeroSS)
                 {
