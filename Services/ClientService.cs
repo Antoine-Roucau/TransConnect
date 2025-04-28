@@ -8,7 +8,7 @@ namespace Transconnect.Services
 {
     public class ClientService
     {
-        public DataTable GetClientsTries(List<Client> clientList)
+        public DataTable GetClientsDF(List<Client> clientList)
         {
             // Création du Dataframe
             DataTable dfClient = new DataTable();

@@ -1,11 +1,12 @@
 using System;
 using System.Data;
 using TransConnect.Models;
+
 namespace Transconnect.Services
 {
     public class SalarieService
     {
-        public DataTable GetSalariesTries(List<Salarie> salarieList)
+        public DataTable GetSalariesDF(List<Salarie> salarieList)
         {
             DataTable dfSalarie = new DataTable();
             dfSalarie.Columns.Add("Numéro de Sécurité Sociale", typeof(string));
