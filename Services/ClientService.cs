@@ -50,35 +50,35 @@ namespace Transconnect.Services
             ClientList.Remove(client);
         }
 
-        public DataView trierClientsParNom(DataTable dfClient)
+        public DataView TrierClientsParNom(DataTable dfClient)
         {
             DataView vueParNom = dfClient.DefaultView;
             vueParNom.Sort = "Nom ASC";
             return vueParNom;
         }
 
-        public DataView trierClientsParMontant(DataTable dfClient)
+        public DataView TrierClientsParMontant(DataTable dfClient)
         {
             DataView vueParMontant = dfClient.DefaultView;
             vueParMontant.Sort = "Montant Achats Cumulés DESC";
             return vueParMontant;
         }
 
-        public DataView trierClientsParVille(DataTable dfClient)
+        public DataView TrierClientsParVille(DataTable dfClient)
         {
             DataView vueParVille = dfClient.DefaultView;
             vueParVille.Sort = "Adresse Postale ASC";
             return vueParVille;
         }
 
-        public DataView trierClientsParDateNaissance(DataTable dfClient)
+        public DataView TrierClientsParDateNaissance(DataTable dfClient)
         {
             DataView vueParDateNaissance = dfClient.DefaultView;
             vueParDateNaissance.Sort = "Date de Naissance ASC";
             return vueParDateNaissance;
         }
 
-        public void modifierClient(Client client, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, List<Client> ClientList)
+        public void ModifierClient(Client client, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, List<Client> ClientList)
         {
             if (!ClientList.Contains(client))
             {
