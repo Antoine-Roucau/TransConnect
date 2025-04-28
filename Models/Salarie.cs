@@ -23,7 +23,7 @@ namespace TransConnect.Models
         #endregion
         
         #region Getters et Setters
-        public string DateEntree
+        public DateTime DateEntree
         {
              get; 
              set; 
