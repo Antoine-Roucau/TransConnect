@@ -11,7 +11,6 @@ namespace TransConnect.Models.Graphe
         int id;
         static int nextId = 1;
         Object entite;
-        List<Lien> liens = new List<Lien>();
         #endregion
 
         #region Constructeurs
@@ -19,12 +18,6 @@ namespace TransConnect.Models.Graphe
         {
             this.id = nextId++;
             this.entite = entite;
-        }
-        public Noeud(Object entite, List<Lien> liens)
-        {
-            this.id = nextId++;
-            this.entite = entite;
-            this.liens = liens;
         }
         #endregion
 
@@ -38,22 +31,9 @@ namespace TransConnect.Models.Graphe
             get { return entite; }
             set { entite = value; }
         }
-        public List<Lien> Liens
-        {
-            get { return liens; }
-            set { liens = value; }
-        }
         #endregion
     
         #region Méthodes
-        public void AjouterLien(Lien lien)
-        {
-            liens.Add(lien);
-        }
-        public void SupprimerLien(Lien lien)
-        {
-            liens.Remove(lien);
-        }
         public override string ToString()
         {
             if(entite.ToString() != null)
