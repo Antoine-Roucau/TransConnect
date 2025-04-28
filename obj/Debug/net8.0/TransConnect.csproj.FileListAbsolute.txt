@@ -13,3 +13,11 @@ C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\obj\Debug\net8.0\
 C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.pdb
 C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.genruntimeconfig.cache
 C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\obj\Debug\net8.0\ref\TransConnect.dll
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.AssemblyInfoInputs.cache
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.AssemblyInfo.cs
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.csproj.CoreCompileInputs.cache
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.sourcelink.json
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.dll
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\refint\TransConnect.dll
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0\TransConnect.pdb
