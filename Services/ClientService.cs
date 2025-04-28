@@ -25,23 +25,54 @@ namespace Transconnect.Services
             {
                 dfClient.Rows.Add(c.NumeroSS, c.Nom, c.Prenom, c.DateNaissance, c.AdressePostale, c.AdresseMail, c.Telephone, c.MontantTotalAchats);
             }
+            return dfClient;
+        }
+        public void AjouterClient(Client client, List<Client> ClientList)
+        {
+            // Vérification de l'existence du client
+            foreach (Client c in ClientList)
+            {
+                if (c.NumeroSS == client.NumeroSS)
+                {
+                    throw new Exception("Le client existe déjà.");
+                }
+            }
 
+            ClientList.Add(client);
+        }
+         public void SupprimerClient(Client client, List<Client> ClientList)
+        {
+            // Vérification de l'existence du client
+            if (!ClientList.Contains(client))
+            {
+                throw new Exception("Le client n'existe pas.");
+            }
+
+            ClientList.Remove(client);
+        }
+
+        public DataView trierClientsParNom(DataTable dfClient)
+        {
             // Tri par Nom
             DataView vueParNom = dfClient.DefaultView;
             vueParNom.Sort = "Nom ASC";
-            DataTable dfClientTrierParNom = vueParNom.ToTable();
+            return vueParNom;
+        }
 
+        public DataView trierClientsParMontant(DataTable dfClient)
+        {
             // Tri par Montant
             DataView vueParMontant = dfClient.DefaultView;
             vueParMontant.Sort = "Montant Achats Cumulés DESC";
-            DataTable dfClientTrieParMontant = vueParMontant.ToTable();
+            return vueParMontant;
+        }
 
-            return dfClientTrierParNom;
-
-            //Tri par ville
+        public DataView trierClientsParVille(DataTable dfClient)
+        {
+            // Tri par Ville
             DataView vueParVille = dfClient.DefaultView;
             vueParVille.Sort = "Adresse Postale ASC";
-            DataTable dfClientTrieParVille = vueParVille.ToTable();
+            return vueParVille;
         }
     }
 }
