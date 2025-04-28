@@ -13,6 +13,10 @@ namespace TransConnect.Models.Graphe
         #endregion
 
         #region Constructeurs
+        public Graphe(Object racine)
+        {
+            this.racine = new Noeud(racine);
+        }
         public Graphe(Noeud racine)
         {
             this.racine = racine;

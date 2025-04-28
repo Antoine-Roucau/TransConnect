@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TransConnect.Models;
+using TransConnect.Models.Graphe;
 
 
 namespace TransConnect.Data
@@ -9,16 +10,20 @@ namespace TransConnect.Data
     {
         List<Salarie> salaries = new List<Salarie>();
         List<Vehicule> vehicules = new List<Vehicule>();
-        List<Commande> commandes = new List<Commande>();
         List<Client> clients = new List<Client>();
+        List<String> villes = new List<String>();
+        List<Commande> commandes = new List<Commande>();
 
-
+        Graphe grapheSalarie = new Graphe(new Salarie("GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", 0));
+        Graphe grapheVille = new Graphe("Ville");
         public DataInitializer()
         {
 
             InitialiserSalaries();
             InitialiserVehicules();
             InitialiserClients();
+            InitialiserVilles();
+            InitialiserGrapheSalarie();
         }
 
         private void InitialiserSalaries()
@@ -34,7 +39,6 @@ namespace TransConnect.Data
             }
             reader.Close();
         }
-
         private void InitialiserVehicules()
         {
             TextReader reader = new StreamReader("Data/CSV/Vehicule.csv");
@@ -49,7 +53,6 @@ namespace TransConnect.Data
             }
             reader.Close();
         }
-
         private void InitialiserClients()
         {
             TextReader reader = new StreamReader("Data/CSV/Client.csv");
@@ -62,37 +65,46 @@ namespace TransConnect.Data
             }
             reader.Close();
         }
+        private void InitialiserVilles()
+        {
+            TextReader reader = new StreamReader("Data/CSV/Ville.csv");
+            string line = reader.ReadLine();
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[] collonnes = line.Split(';');
+                villes.Add(collonnes[0]);
+            }
+            reader.Close();
+        }
+        private void InitialiserGrapheSalarie()
+        {
+            this.grapheSalarie.Racine = new Noeud(this.salaries[0]);
+            for (int i = 1; i < this.salaries.Count; i++)
+            {
+                Noeud noeud = new Noeud(this.salaries[i]);
+                this.grapheSalarie.AjouterNoeud(noeud);
+            }
+            List<String[]> liens = new List<String[]>();
+            TextReader reader = new StreamReader("Data/CSV/Hierachie.csv");
+            string line = reader.ReadLine();
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[] collonnes = line.Split(';');
+                liens.Add(collonnes);
+            }
+            reader.Close();
 
 
+        }
         public static T ParseEnum<T>(string value)
         {
             return (T) Enum.Parse(typeof(T), value, true);
         }
 
-        public void AfficherSalaries()
+        public void AfficherGrapheSalarie()
         {
-            foreach (var salarie in salaries)
-            {
-                Console.WriteLine(salarie.AfficherInfos());
-            }
+            grapheSalarie.AfficherGraphe();
         }
-
-        public void AfficherVehicules()
-        {
-            foreach (var vehicule in vehicules)
-            {
-                Console.WriteLine(vehicule.AfficherInfos());
-            }
-        }
-
-        public void AfficherClients()
-        {
-            foreach (var client in clients)
-            {
-                Console.WriteLine(client.AfficherInfos());
-            }
-        }
-
 
     }
 }
