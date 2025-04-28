@@ -84,12 +84,6 @@ namespace TransConnect.Data
         {
             this.grapheSalarie.Racine = new Noeud(this.salaries[0]);
             
-            for (int i = 1; i < this.salaries.Count; i++)
-            {
-                Noeud noeud = new Noeud(this.salaries[i]);
-                this.grapheSalarie.AjouterNoeud(noeud);
-            }
-            
             List<String[]> liens = new List<String[]>();
             TextReader reader = new StreamReader("Data/CSV/Hierachie.csv");
             string line = reader.ReadLine();
@@ -100,16 +94,33 @@ namespace TransConnect.Data
             }
             reader.Close();
             
-
-            for (int i = 0; i < liens.Count; i++)
+            Dictionary<string, Noeud> mapSalarieNoeud = new Dictionary<string, Noeud>();
+            
+            if (this.grapheSalarie.Racine.Entite is Salarie)
             {
-                Noeud noeud1 = this.grapheSalarie.TrouverNoeudParSalarieNumeroSS(liens[i][0]);
-                Noeud noeud2 = this.grapheSalarie.TrouverNoeudParSalarieNumeroSS(liens[i][1]);
-                
-                if (noeud1 != null && noeud2 != null)
+                mapSalarieNoeud.Add(((Salarie)this.grapheSalarie.Racine.Entite).NumeroSS, this.grapheSalarie.Racine);
+            }
+            
+            foreach (var salarie in this.salaries)
+            {
+                if (salarie != this.salaries[0])
                 {
-                    Lien lien = new Lien(noeud1, noeud2, null, true);
+                    Noeud noeud = new Noeud(salarie);
+                    this.grapheSalarie.AjouterNoeud(noeud);
+                    mapSalarieNoeud.Add(salarie.NumeroSS, noeud);
+                }
+            }
+            foreach (var relation in liens)
+            {
+                if (mapSalarieNoeud.TryGetValue(relation[0], out Noeud manager) && mapSalarieNoeud.TryGetValue(relation[1], out Noeud subordonne))
+                {
+                    Lien lien = new Lien(manager, subordonne, null, true);
                     this.grapheSalarie.AjouterLien(lien);
+                    
+                    if (manager.Entite is Salarie managerSalarie && subordonne.Entite is Salarie subordonneSalarie)
+                    {
+                        managerSalarie.AddSubordonnes(subordonneSalarie);
+                    }
                 }
             }
         }
@@ -184,14 +195,6 @@ namespace TransConnect.Data
         public void AfficherGrapheVille()
         {
             grapheVille.AfficherGraphe();
-        }
-
-        public void AfficherVoiture()
-        {
-            foreach (Vehicule vehicule in vehicules)
-            {
-                Console.WriteLine(vehicule.AfficherInfos());
-            }
         }
     }
 }

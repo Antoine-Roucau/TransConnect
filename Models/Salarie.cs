@@ -25,23 +25,23 @@ namespace TransConnect.Models
         #region Getters et Setters
         public DateTime DateEntree
         {
-             get; 
-             set; 
+            get { return dateEntree; }
+            set { dateEntree = value; }
         }
         public string Poste 
         { 
-            get; 
-            set; 
+            get { return poste; }
+            set { poste = value; } 
         }
         public decimal Salaire 
         { 
-            get; 
-            set; 
+            get { return salaire; }
+            set { salaire = value; } 
         }
-        public List<Salarie> Salaries 
+        public List<Salarie> Subordonnes 
         { 
-            get; 
-            set; 
+            get { return subordonnes; }
+            set { subordonnes = value; } 
         }
         #endregion
 

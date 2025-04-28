@@ -273,7 +273,7 @@ namespace TransConnect.Models.Graphe
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("\n╔═════════════════════════════════════════════════════════════╗");
-                Console.WriteLine("║                   VILLES PRINCIPALES                        ║");
+                Console.WriteLine("║                   VILLES                                    ║");
                 Console.WriteLine("╚═════════════════════════════════════════════════════════════╝");
                 Console.ResetColor();
                 
@@ -286,7 +286,7 @@ namespace TransConnect.Models.Graphe
             // Affichage des connexions (autres que celles de la capitale déjà affichées)
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\n╔═════════════════════════════════════════════════════════════╗");
-            Console.WriteLine("║                  AUTRES CONNEXIONS                           ║");
+            Console.WriteLine("║                         CONNEXIONS                          ║");
             Console.WriteLine("╚═════════════════════════════════════════════════════════════╝");
             Console.ResetColor();
             
@@ -311,63 +311,9 @@ namespace TransConnect.Models.Graphe
                 
                 Console.Write($"• {ville1.PadRight(15)} ");
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write($"──({distance,4:F0} km)──> ");
+                Console.Write($"──({distance,4:F0} km)── ");
                 Console.ResetColor();
                 Console.WriteLine($"{ville2}");
-            }
-            
-            // Affichage du réseau en étoile depuis la capitale
-            if (_graphe.Racine != null)
-            {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("\n╔═════════════════════════════════════════════════════════════╗");
-                Console.WriteLine("║                 RÉSEAU DEPUIS LA CAPITALE                   ║");
-                Console.WriteLine("╚═════════════════════════════════════════════════════════════╝");
-                Console.ResetColor();
-                
-                AfficherReseauCapitale();
-            }
-            
-            // Affichage de statistiques
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\n╔═════════════════════════════════════════════════════════════╗");
-            Console.WriteLine("║                    STATISTIQUES                             ║");
-            Console.WriteLine("╚═════════════════════════════════════════════════════════════╝");
-            Console.ResetColor();
-            
-            if (_graphe.Liens.Count > 0)
-            {
-                var distanceMin = _graphe.Liens.Min(l => l.Valeur);
-                var distanceMax = _graphe.Liens.Max(l => l.Valeur);
-                var distanceMoyenne = _graphe.Liens.Average(l => l.Valeur);
-                
-                // Trouver les villes les plus proches
-                var lienDistanceMin = _graphe.Liens.First(l => l.Valeur == distanceMin);
-                // Trouver les villes les plus éloignées
-                var lienDistanceMax = _graphe.Liens.First(l => l.Valeur == distanceMax);
-                
-                Console.WriteLine($"Distance minimale : {distanceMin:F0} km ({lienDistanceMin.Noeud1} - {lienDistanceMin.Noeud2})");
-                Console.WriteLine($"Distance maximale : {distanceMax:F0} km ({lienDistanceMax.Noeud1} - {lienDistanceMax.Noeud2})");
-                Console.WriteLine($"Distance moyenne : {distanceMoyenne:F0} km");
-                
-                // Statistiques spécifiques à la capitale si elle existe
-                if (_graphe.Racine != null)
-                {
-                    var liensCapitale = _graphe.Liens
-                        .Where(l => l.Noeud1.Id == _graphe.Racine.Id || l.Noeud2.Id == _graphe.Racine.Id);
-                    
-                    if (liensCapitale.Any())
-                    {
-                        var distanceMinCapitale = liensCapitale.Min(l => l.Valeur);
-                        var distanceMaxCapitale = liensCapitale.Max(l => l.Valeur);
-                        var distanceMoyenneCapitale = liensCapitale.Average(l => l.Valeur);
-                        
-                        Console.WriteLine($"\nDepuis la capitale ({_graphe.Racine}):");
-                        Console.WriteLine($"Distance minimale : {distanceMinCapitale:F0} km");
-                        Console.WriteLine($"Distance maximale : {distanceMaxCapitale:F0} km");
-                        Console.WriteLine($"Distance moyenne : {distanceMoyenneCapitale:F0} km");
-                    }
-                }
             }
         }
         
@@ -470,29 +416,6 @@ namespace TransConnect.Models.Graphe
                 AfficherOrganigrammeRecursif(_graphe.Noeuds[0], "", true, noeudsAffiches);
             }
             
-            // Afficher les salariés non connectés
-            bool salariesSansManagerTrouves = false;
-            foreach (var noeud in _graphe.Noeuds)
-            {
-                if (!noeudsAffiches.Contains(noeud.Id))
-                {
-                    if (!salariesSansManagerTrouves)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-                        Console.WriteLine("\n╔═════════════════════════════════════════════════════════════╗");
-                        Console.WriteLine("║               SALARIÉS SANS RATTACHEMENT                    ║");
-                        Console.WriteLine("╚═════════════════════════════════════════════════════════════╝");
-                        Console.ResetColor();
-                        salariesSansManagerTrouves = true;
-                    }
-                    
-                    if (noeud.Entite is Salarie)
-                    {
-                        Salarie salarie = (Salarie)noeud.Entite;
-                        Console.WriteLine($"• {salarie.Prenom} {salarie.Nom} - {salarie.Poste}");
-                    }
-                }
-            }
         }
         
         private void AfficherOrganigrammeRecursif(Noeud noeud, string prefixe, bool estDernier, HashSet<int> noeudsAffiches)
@@ -546,53 +469,6 @@ namespace TransConnect.Models.Graphe
                     // Affiche que le noeud a déjà été affiché pour éviter les cycles infinis
                     Console.WriteLine($"{nouveauPrefixe}{(estDernierSubordonne ? "└── " : "├── ")}[Référence circulaire]");
                 }
-            }
-        }
-        
-        public void AfficherPlusCourtChemin(List<Noeud> chemin)
-        {
-            if (chemin == null || chemin.Count < 2)
-            {
-                Console.WriteLine("Aucun chemin à afficher.");
-                return;
-            }
-            
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\n╔═════════════════════════════════════════════════════════════╗");
-            Console.WriteLine("║                  PLUS COURT CHEMIN                          ║");
-            Console.WriteLine("╚═════════════════════════════════════════════════════════════╝");
-            Console.ResetColor();
-            
-            Console.WriteLine($"\nChemin de {chemin[0]} à {chemin[chemin.Count - 1]} :");
-            
-            double distanceTotale = 0;
-            
-            for (int i = 0; i < chemin.Count - 1; i++)
-            {
-                Noeud noeudActuel = chemin[i];
-                Noeud noeudSuivant = chemin[i + 1];
-                
-                // Trouver le lien entre ces deux noeuds
-                var lien = _graphe.Liens.FirstOrDefault(l => 
-                    (l.Noeud1.Id == noeudActuel.Id && l.Noeud2.Id == noeudSuivant.Id) ||
-                    (l.Noeud1.Id == noeudSuivant.Id && l.Noeud2.Id == noeudActuel.Id));
-                
-                double? distance = lien?.Valeur;
-                if (distance.HasValue)
-                {
-                    distanceTotale += distance.Value;
-                }
-                
-                Console.Write($"• {noeudActuel} ");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write($"──{(distance.HasValue ? $"({distance:F0} km)" : "")}──> ");
-                Console.ResetColor();
-                Console.WriteLine($"{noeudSuivant}");
-            }
-            
-            if (distanceTotale > 0)
-            {
-                Console.WriteLine($"\nDistance totale : {distanceTotale:F0} km");
             }
         }
     }
