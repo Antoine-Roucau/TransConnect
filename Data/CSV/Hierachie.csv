@@ -1,20 +1,20 @@
-Nom_employe1;poste1;Nom_employe2;poste2
-Dupond;Directeur General;Fiesta;Directrice Commerciale
-Dupond;Directeur General;Fetard;Directeur des Operations
-Dupond;Directeur General;Joyeuse;Directrice des RH
-Dupond;Directeur General;GripSous;Directeur Financier
-Fiesta;Directrice Commerciale;Forge;Commercial
-Fiesta;Directrice Commerciale;Fermi;Commerciale
-Fetard;Directeur des Operations;Royal;Chef d'Equipe
-Fetard;Directeur des Operations;Prince;Chef d'Equipe
-Royal;Chef d'Equipe;Romu;Chauffeur
-Royal;Chef d'Equipe;Romi;Chauffeur
-Royal;Chef d'Equipe;Roma;Chauffeur
-Prince;Chef d'Equipe;Rome;Chauffeur
-Prince;Chef d'Equipe;Rimou;Chauffeur
-Joyeuse;Directrice des RH;Couleur;Formation
-Joyeuse;Directrice des RH;TouteLeMonde;Contrats
-GripSous;Directeur Financier;Picsou;Direction Comptable
-GripSous;Directeur Financier;GrosSous;Controleur de Gestion
-Picsou;Direction Comptable;Fournier;Comptable
-Picsou;Direction Comptable;Gautier;Comptable
+NumeroSS_employe1;poste1;NumeroSS_employe2;poste2
+123456789012345;Directeur General;987654321098765;Directrice Commerciale
+123456789012345;Directeur General;456789123456789;Directeur des Operations
+123456789012345;Directeur General;321654987321654;Directrice des RH
+123456789012345;Directeur General;741852963741852;Directeur Financier
+987654321098765;Directrice Commerciale;852369741258963;Commercial
+987654321098765;Directrice Commerciale;963258741369852;Commerciale
+456789123456789;Directeur des Operations;753159852456963;Chef d'Equipe
+456789123456789;Directeur des Operations;951753258456963;Chef d'Equipe
+753159852456963;Chef d'Equipe;258369741963852;Chauffeur
+753159852456963;Chef d'Equipe;369852147258963;Chauffeur
+753159852456963;Chef d'Equipe;147852369852147;Chauffeur
+951753258456963;Chef d'Equipe;123987654258963;Chauffeur
+951753258456963;Chef d'Equipe;741258963369852;Chauffeur
+321654987321654;Directrice des RH;852147963258741;Formation
+321654987321654;Directrice des RH;369741852963258;Contrats
+741852963741852;Directeur Financier;951236874512369;Direction Comptable
+741852963741852;Directeur Financier;852147963258963;Controleur de Gestion
+951236874512369;Direction Comptable;741258963147852;Comptable
+951236874512369;Direction Comptable;258963741369852;Comptable

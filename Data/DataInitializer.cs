@@ -94,7 +94,16 @@ namespace TransConnect.Data
                 liens.Add(collonnes);
             }
             reader.Close();
-
+            for (int i = 0; i < liens.Count; i++)
+            {
+                Noeud noeud1 = this.grapheSalarie.TrouverNoeudParSalarieNumeroSS(liens[i][0]);
+                Noeud noeud2 = this.grapheSalarie.TrouverNoeudParSalarieNumeroSS(liens[i][1]);
+                if (noeud1 != null && noeud2 != null)
+                {
+                    Lien lien = new Lien(noeud1, noeud2, null, true);
+                    this.grapheSalarie.AjouterLien(lien);
+                }
+            }
 
         }
         private void InitialiserGrapheVille()
@@ -121,7 +130,10 @@ namespace TransConnect.Data
                 if (noeud1 != null && noeud2 != null)
                 {
                     Lien lien = new Lien(noeud1, noeud2, Convert.ToDouble(liens[i][2]), null);
-                    this.grapheVille.AjouterLien(lien);
+                    if (!this.grapheVille.LiensExistants(lien))
+                    {
+                        this.grapheVille.AjouterLien(lien);
+                    }
                 }
             }
         }
@@ -130,6 +142,10 @@ namespace TransConnect.Data
             return (T) Enum.Parse(typeof(T), value, true);
         }
 
+        public void AfficherGrapheSalarie()
+        {
+            grapheSalarie.AfficherGraphe();
+        }
         public void AfficherGrapheVille()
         {
             grapheVille.AfficherGraphe();
