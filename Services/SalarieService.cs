@@ -5,7 +5,7 @@ namespace Transconnect.Services
 {
     public class SalarieService
     {
-        public DataTable GetSalariesTries(List<Salarie> SalarieList)
+        public DataTable GetSalariesTries(List<Salarie> salarieList)
         {
             DataTable dfSalarie = new DataTable();
             dfSalarie.Columns.Add("Numéro de Sécurité Sociale", typeof(string));
@@ -19,7 +19,7 @@ namespace Transconnect.Services
             dfSalarie.Columns.Add("Poste", typeof(string));
             dfSalarie.Columns.Add("Salaire", typeof(decimal));
 
-            foreach (Salarie s in SalarieList)
+            foreach (Salarie s in salarieList)
             {
                 dfSalarie.Rows.Add(s.NumeroSS, s.Nom, s.Prenom, s.DateNaissance, s.AdressePostale, s.AdresseMail, s.Telephone, s.DateEntree, s.Poste, s.Salaire);
             }
