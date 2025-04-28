@@ -1,20 +1,20 @@
-Nom_employe1,poste1,Nom_employe2,poste2
-Dupond,Directeur General,Fiesta,Directrice Commerciale
-Dupond,Directeur General,Fetard,Directeur des Operations
-Dupond,Directeur General,Joyeuse,Directrice des RH
-Dupond,Directeur General,GripSous,Directeur Financier
-Fiesta,Directrice Commerciale,Forge,Commercial
-Fiesta,Directrice Commerciale,Fermi,Commerciale
-Fetard,Directeur des Operations,Royal,Chef d'Equipe
-Fetard,Directeur des Operations,Prince,Chef d'Equipe
-Royal,Chef d'Equipe,Romu,Chauffeur
-Royal,Chef d'Equipe,Romi,Chauffeur
-Royal,Chef d'Equipe,Roma,Chauffeur
-Prince,Chef d'Equipe,Rome,Chauffeur
-Prince,Chef d'Equipe,Rimou,Chauffeur
-Joyeuse,Directrice des RH,Couleur,Formation
-Joyeuse,Directrice des RH,TouteLeMonde,Contrats
-GripSous,Directeur Financier,Picsou,Direction Comptable
-GripSous,Directeur Financier,GrosSous,Controleur de Gestion
-Picsou,Direction Comptable,Fournier,Comptable
-Picsou,Direction Comptable,Gautier,Comptable
+Nom_employe1;poste1;Nom_employe2;poste2
+Dupond;Directeur General;Fiesta;Directrice Commerciale
+Dupond;Directeur General;Fetard;Directeur des Operations
+Dupond;Directeur General;Joyeuse;Directrice des RH
+Dupond;Directeur General;GripSous;Directeur Financier
+Fiesta;Directrice Commerciale;Forge;Commercial
+Fiesta;Directrice Commerciale;Fermi;Commerciale
+Fetard;Directeur des Operations;Royal;Chef d'Equipe
+Fetard;Directeur des Operations;Prince;Chef d'Equipe
+Royal;Chef d'Equipe;Romu;Chauffeur
+Royal;Chef d'Equipe;Romi;Chauffeur
+Royal;Chef d'Equipe;Roma;Chauffeur
+Prince;Chef d'Equipe;Rome;Chauffeur
+Prince;Chef d'Equipe;Rimou;Chauffeur
+Joyeuse;Directrice des RH;Couleur;Formation
+Joyeuse;Directrice des RH;TouteLeMonde;Contrats
+GripSous;Directeur Financier;Picsou;Direction Comptable
+GripSous;Directeur Financier;GrosSous;Controleur de Gestion
+Picsou;Direction Comptable;Fournier;Comptable
+Picsou;Direction Comptable;Gautier;Comptable
