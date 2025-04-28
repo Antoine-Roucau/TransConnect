@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
 using TransConnect.Models;
+using Transconnect.Services;
 using TransConnect.Models.Graphe;
+using TransConnect.UI;
 
 namespace TransConnect.Data
 {
     public class DataInitializer
     {
+        #region  Propriétés
         List<Salarie> salaries = new List<Salarie>();
         List<Vehicule> vehicules = new List<Vehicule>();
         List<Client> clients = new List<Client>();
@@ -17,13 +20,15 @@ namespace TransConnect.Data
 
         Graphe grapheSalarie = new Graphe(new Salarie("GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", 0));
         Graphe grapheVille = new Graphe("Ville");
-        
+        #endregion
+        #region Constructeur
         public DataInitializer()
         {
             InitialiserSalaries();
             InitialiserVehicules();
             InitialiserClients();
             InitialiserVilles();
+            InitialiserCommandes();
             InitialiserGrapheSalarie();
             InitialiserGrapheVille();
         }
@@ -79,6 +84,25 @@ namespace TransConnect.Data
             }
             reader.Close();
         }
+
+        private void InitialiserCommandes()
+        {
+            TextReader reader = new StreamReader("Data/CSV/Commande.csv");
+            string line = reader.ReadLine();
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[] colonnes = line.Split(';');
+                Commande commande = new Commande(Convert.ToInt32(colonnes[0]), colonnes[1], colonnes[2],Convert.ToDateTime(colonnes[3]),Convert.ToDecimal(colonnes[4]));
+                commande.Statut = ParseEnum<StatutCommande>(colonnes[5]);
+                Client client = clients.Find(c => c.NumeroSS == colonnes[6]);
+                commande.Client = client;
+                commande.Chauffeur = salaries.Find(s => s.NumeroSS == colonnes[7]);
+                commande.Vehicule = vehicules.Find(v => v.Immatriculation == colonnes[8]);
+                commandes.Add(commande);
+                client.AddCommande(commande);
+            }
+            reader.Close();
+        }
         
         private void InitialiserGrapheSalarie()
         {
@@ -131,7 +155,7 @@ namespace TransConnect.Data
             this.grapheVille.Racine = new Noeud(this.villes[0]);
             
 
-            for (int i = 1; i < this.villes.Count; i++)
+            for (int i = 0; i < this.villes.Count; i++)
             {
                 Noeud noeud = new Noeud(this.villes[i]);
                 this.grapheVille.AjouterNoeud(noeud);
@@ -160,7 +184,8 @@ namespace TransConnect.Data
                 }
             }
         }
-        
+        #endregion
+        #region Méthodes
         public static T ParseEnum<T>(string value)
         {
             switch (typeof(T).Name)
@@ -181,20 +206,31 @@ namespace TransConnect.Data
                     }
                     return (T) Enum.Parse(typeof(TypeVehicule), value, true);
                 case "StatutCommande":
+                    switch (value)
+                    {
+                        case "0":
+                            return (T) Enum.Parse(typeof(StatutCommande), "EnAttente", true);
+                        case "1":
+                            return (T) Enum.Parse(typeof(StatutCommande), "EnCours", true);
+                        case "2":
+                            return (T) Enum.Parse(typeof(StatutCommande), "Livree", true);
+                        case "3":
+                            return (T) Enum.Parse(typeof(StatutCommande), "Payee", true);
+                        case "4":
+                            return (T) Enum.Parse(typeof(StatutCommande), "Annulee", true);
+                    }
                     return (T) Enum.Parse(typeof(StatutCommande), value, true);
                 default:
                     throw new ArgumentException($"PB Enum");
             }
         }
 
-        public void AfficherGrapheSalarie()
+        public void AfficherGrapheVilleGraphique()
         {
-            grapheSalarie.AfficherGraphe();
+            var visualiseur = new GrapheVisualiseur(grapheVille);
+            visualiseur.AfficherGraphe();
         }
-        
-        public void AfficherGrapheVille()
-        {
-            grapheVille.AfficherGraphe();
-        }
+
+        #endregion
     }
 }

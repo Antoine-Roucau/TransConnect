@@ -6,5 +6,5 @@ using TransConnect.Data;
 Console.Clear();
 DataInitializer dataInitializer = new DataInitializer();
 
-dataInitializer.AfficherGrapheVille();
+dataInitializer.AfficherGrapheVilleGraphique();
 

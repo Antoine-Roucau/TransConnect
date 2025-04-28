@@ -57,5 +57,17 @@ namespace Transconnect.Services
             }
             throw new Exception("Le véhicule n'existe pas.");
         }
+
+        public Vehicule TrouverVehicule(string immatriculation, List<Vehicule> vehiculeList)
+        {
+            foreach (Vehicule v in vehiculeList)
+            {
+                if (v.Immatriculation == immatriculation)
+                {
+                    return v;
+                }
+            }
+            throw new Exception("Le véhicule n'existe pas.");
+        }
     }
 }

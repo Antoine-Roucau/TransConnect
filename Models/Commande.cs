@@ -31,6 +31,15 @@ namespace TransConnect.Models
         #endregion
         
         #region Constructeurs
+        public Commande(int id, string villeDepart, string villeArrivee, DateTime date, decimal prix)
+        {
+            this.id = id;
+            this.villeDepart = villeDepart;
+            this.villeArrivee = villeArrivee;
+            this.date = date;
+            this.prix = prix;
+        }
+
         public Commande(string villeDepart, string villeArrivee, DateTime date,decimal prix)
         {
             this.id = nextId;
