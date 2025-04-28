@@ -5,23 +5,8 @@ using TransConnect.Models;
 
 namespace Transconnect.Services
 {
-    public class ClientService : Personne
+    public class ClientService
     {
-        private decimal montantAchatsCumulés;
-
-        public ClientService(string numeroSS, string nom, string prenom, DateTime dateNaissance,
-            string adressePostale, string adresseEmail, string telephone, decimal montantAchats)
-            : base(numeroSS, nom, prenom, dateNaissance, adressePostale, adresseEmail, telephone)
-        {
-            this.montantAchatsCumulés = montantAchats;
-        }
-
-        public decimal MontantAchatsCumulés
-        {
-            get { return montantAchatsCumulés; }
-            set { if (value >= 0) montantAchatsCumulés = value; }
-        }
-
         public DataTable GetClientsTriés(List<Client> ClientList)
         {
             // Création du Dataframe
@@ -38,7 +23,7 @@ namespace Transconnect.Services
             // Remplissage du Dataframe
             foreach (Client c in ClientList)
             {
-                dfClient.Rows.Add(c.NumeroSS,c.Nom,c.Prenom,c.DateNaissance,c.AdressePostale,c.AdresseMail,c.Telephone,this.MontantAchatsCumulés);
+                dfClient.Rows.Add();
             }
 
             // Tri par Nom
