@@ -24,6 +24,7 @@ namespace TransConnect.Data
             InitialiserClients();
             InitialiserVilles();
             InitialiserGrapheSalarie();
+            InitialiserGrapheVille();
         }
 
         private void InitialiserSalaries()
@@ -96,14 +97,42 @@ namespace TransConnect.Data
 
 
         }
+        private void InitialiserGrapheVille()
+        {
+            this.grapheVille.Racine = new Noeud(this.villes[0]);
+            for (int i = 1; i < this.villes.Count; i++)
+            {
+                Noeud noeud = new Noeud(this.villes[i]);
+                this.grapheVille.AjouterNoeud(noeud);
+            }
+            List<String[]> liens = new List<String[]>();
+            TextReader reader = new StreamReader("Data/CSV/distances_villes_france.csv");
+            string line = reader.ReadLine();
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[] collonnes = line.Split(';');
+                liens.Add(collonnes);
+            }
+            reader.Close();
+            for (int i = 0; i < liens.Count; i++)
+            {
+                Noeud noeud1 = this.grapheVille.TrouverNoeudVille(liens[i][0]);
+                Noeud noeud2 = this.grapheVille.TrouverNoeudVille(liens[i][1]);
+                if (noeud1 != null && noeud2 != null)
+                {
+                    Lien lien = new Lien(noeud1, noeud2, Convert.ToDouble(liens[i][2]), null);
+                    this.grapheVille.AjouterLien(lien);
+                }
+            }
+        }
         public static T ParseEnum<T>(string value)
         {
             return (T) Enum.Parse(typeof(T), value, true);
         }
 
-        public void AfficherGrapheSalarie()
+        public void AfficherGrapheVille()
         {
-            grapheSalarie.AfficherGraphe();
+            grapheVille.AfficherGraphe();
         }
 
     }
