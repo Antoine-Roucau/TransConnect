@@ -35,9 +35,7 @@ namespace TransConnect.Data
             while ((line = reader.ReadLine()) != null)
             {
                 string[] colonnes = line.Split(';');
-                decimal salaire = decimal.Parse(colonnes[9].Replace(",", "."), CultureInfo.InvariantCulture);
-                Salarie salarie = new Salarie(colonnes[0], colonnes[1], colonnes[2], Convert.ToDateTime(colonnes[3]), 
-                    colonnes[4], colonnes[5], colonnes[6], Convert.ToDateTime(colonnes[7]), colonnes[8], salaire);
+                Salarie salarie = new Salarie(colonnes[0], colonnes[1], colonnes[2], Convert.ToDateTime(colonnes[3]), colonnes[4], colonnes[5], colonnes[6], Convert.ToDateTime(colonnes[7]), colonnes[8], Convert.ToDecimal(colonnes[9]));
                 salaries.Add(salarie);
             }
             reader.Close();
@@ -50,23 +48,9 @@ namespace TransConnect.Data
             while ((line = reader.ReadLine()) != null)
             {
                 string[] colonnes = line.Split(';');
-                decimal tarifKm = decimal.Parse(colonnes[4].Replace(",", "."), CultureInfo.InvariantCulture);
-                Vehicule vehicule = new Vehicule(colonnes[0], ParseEnum<TypeVehicule>(colonnes[1]), colonnes[2], 
-                    Convert.ToInt32(colonnes[3]), tarifKm);
+                Vehicule vehicule = new Vehicule(colonnes[0], ParseEnum<TypeVehicule>(colonnes[1]), colonnes[2], Convert.ToInt32(colonnes[3]), Convert.ToDecimal(colonnes[4]));
                 vehicule.EstDisponible = Convert.ToBoolean(colonnes[5]);
-                
-                // Vérifier si la spécificité est null ou vide
-                string specificite = colonnes[6];
-                if (!string.IsNullOrEmpty(specificite) && specificite.ToLower() != "null")
-                {
-                    // Enlever les guillemets s'ils existent
-                    if (specificite.StartsWith("\"") && specificite.EndsWith("\""))
-                    {
-                        specificite = specificite.Substring(1, specificite.Length - 2);
-                    }
-                    vehicule.SpecificiteVehicule = specificite;
-                }
-                
+                vehicule.SpecificiteVehicule = colonnes[6];
                 vehicules.Add(vehicule);
             }
             reader.Close();
@@ -79,32 +63,7 @@ namespace TransConnect.Data
             while ((line = reader.ReadLine()) != null)
             {
                 string[] colonnes = line.Split(';');
-                string adressePostale = colonnes[4];
-                
-                // Traiter l'adresse qui peut contenir des points-virgules entre guillemets
-                if (adressePostale.StartsWith("\"") && !adressePostale.EndsWith("\""))
-                {
-                    // L'adresse contient des points-virgules, reconstituer l'adresse complète
-                    for (int i = 5; i < colonnes.Length - 2; i++)
-                    {
-                        adressePostale += ";" + colonnes[i];
-                        if (adressePostale.EndsWith("\""))
-                            break;
-                    }
-                }
-                
-                // Enlever les guillemets
-                if (adressePostale.StartsWith("\"") && adressePostale.EndsWith("\""))
-                {
-                    adressePostale = adressePostale.Substring(1, adressePostale.Length - 2);
-                }
-                
-                // Les deux dernières colonnes sont toujours email et téléphone
-                string email = colonnes[colonnes.Length - 2];
-                string telephone = colonnes[colonnes.Length - 1];
-                
-                Client client = new Client(colonnes[0], colonnes[1], colonnes[2], Convert.ToDateTime(colonnes[3]), 
-                    adressePostale, email, telephone);
+                Client client = new Client(colonnes[0], colonnes[1], colonnes[2], Convert.ToDateTime(colonnes[3]), colonnes[4], colonnes[5], colonnes[6]);
                 clients.Add(client);
             }
             reader.Close();
@@ -123,17 +82,14 @@ namespace TransConnect.Data
         
         private void InitialiserGrapheSalarie()
         {
-            // Trouver le directeur général (par convention devrait être le premier salarié)
             this.grapheSalarie.Racine = new Noeud(this.salaries[0]);
             
-            // Ajouter les autres salariés
             for (int i = 1; i < this.salaries.Count; i++)
             {
                 Noeud noeud = new Noeud(this.salaries[i]);
                 this.grapheSalarie.AjouterNoeud(noeud);
             }
             
-            // Charger les liens hiérarchiques
             List<String[]> liens = new List<String[]>();
             TextReader reader = new StreamReader("Data/CSV/Hierachie.csv");
             string line = reader.ReadLine();
@@ -144,13 +100,11 @@ namespace TransConnect.Data
             }
             reader.Close();
             
-            // Créer les liens
+
             for (int i = 0; i < liens.Count; i++)
             {
-                // Correction de l'indice: Utiliser l'indice 2 (3ème colonne) pour le subordonné
-                // Format: NumeroSS_employe1;poste1;NumeroSS_employe2;poste2
                 Noeud noeud1 = this.grapheSalarie.TrouverNoeudParSalarieNumeroSS(liens[i][0]);
-                Noeud noeud2 = this.grapheSalarie.TrouverNoeudParSalarieNumeroSS(liens[i][2]); // Corrigé: indice 2 au lieu de 1
+                Noeud noeud2 = this.grapheSalarie.TrouverNoeudParSalarieNumeroSS(liens[i][1]);
                 
                 if (noeud1 != null && noeud2 != null)
                 {
@@ -162,34 +116,16 @@ namespace TransConnect.Data
         
         private void InitialiserGrapheVille()
         {
-            // Rechercher Paris pour en faire la capitale
-            int indexParis = -1;
-            for (int i = 0; i < villes.Count; i++)
+
+            this.grapheVille.Racine = new Noeud(this.villes[0]);
+            
+
+            for (int i = 1; i < this.villes.Count; i++)
             {
-                if (villes[i].Equals("Paris", StringComparison.OrdinalIgnoreCase))
-                {
-                    indexParis = i;
-                    break;
-                }
+                Noeud noeud = new Noeud(this.villes[i]);
+                this.grapheVille.AjouterNoeud(noeud);
             }
             
-            // Si Paris n'est pas trouvée, utiliser la première ville
-            int indexCapitale = (indexParis >= 0) ? indexParis : 0;
-            
-            // Définir la capitale comme racine
-            this.grapheVille.Racine = new Noeud(this.villes[indexCapitale]);
-            
-            // Ajouter les autres villes
-            for (int i = 0; i < this.villes.Count; i++)
-            {
-                if (i != indexCapitale) // Ne pas ajouter la capitale deux fois
-                {
-                    Noeud noeud = new Noeud(this.villes[i]);
-                    this.grapheVille.AjouterNoeud(noeud);
-                }
-            }
-            
-            // Charger les distances
             List<String[]> liens = new List<String[]>();
             TextReader reader = new StreamReader("Data/CSV/distances_villes_france.csv");
             string line = reader.ReadLine();
@@ -200,7 +136,6 @@ namespace TransConnect.Data
             }
             reader.Close();
             
-            // Créer les liens
             for (int i = 0; i < liens.Count; i++)
             {
                 Noeud noeud1 = this.grapheVille.TrouverNoeudVille(liens[i][0]);
@@ -210,19 +145,35 @@ namespace TransConnect.Data
                 {
                     double distance = Convert.ToDouble(liens[i][2], CultureInfo.InvariantCulture);
                     Lien lien = new Lien(noeud1, noeud2, distance, null);
-                    
-                    // Vérifier si le lien existe déjà pour éviter les doublons
-                    if (!this.grapheVille.LiensExistants(lien))
-                    {
-                        this.grapheVille.AjouterLien(lien);
-                    }
+                    this.grapheVille.AjouterLien(lien);
                 }
             }
         }
         
         public static T ParseEnum<T>(string value)
         {
-            return (T) Enum.Parse(typeof(T), value, true);
+            switch (typeof(T).Name)
+            {
+                case "TypeVehicule":
+                    switch (value)
+                    {
+                        case "0":
+                            return (T) Enum.Parse(typeof(TypeVehicule), "Voiture", true);
+                        case "1":
+                            return (T) Enum.Parse(typeof(TypeVehicule), "Camionnette", true);
+                        case "2":
+                            return (T) Enum.Parse(typeof(TypeVehicule), "CamionCiterne", true);
+                        case "3":
+                            return (T) Enum.Parse(typeof(TypeVehicule), "CamionBenne", true);
+                        case "4":
+                            return (T) Enum.Parse(typeof(TypeVehicule), "CamionFrigorifique", true);
+                    }
+                    return (T) Enum.Parse(typeof(TypeVehicule), value, true);
+                case "StatutCommande":
+                    return (T) Enum.Parse(typeof(StatutCommande), value, true);
+                default:
+                    throw new ArgumentException($"PB Enum");
+            }
         }
 
         public void AfficherGrapheSalarie()
@@ -233,6 +184,14 @@ namespace TransConnect.Data
         public void AfficherGrapheVille()
         {
             grapheVille.AfficherGraphe();
+        }
+
+        public void AfficherVoiture()
+        {
+            foreach (Vehicule vehicule in vehicules)
+            {
+                Console.WriteLine(vehicule.AfficherInfos());
+            }
         }
     }
 }
