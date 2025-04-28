@@ -48,7 +48,7 @@ namespace TransConnect.Models
             get { return dateNaissance; } 
             set { dateNaissance = value; } 
         }
-        public string AddressePostale 
+        public string AdressePostale 
         { 
             get { return adressePostale; } 
             set { adressePostale = value; } 
