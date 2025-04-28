@@ -93,6 +93,18 @@ namespace Transconnect.Services
             client.AdresseMail = adresseMail;
             client.Telephone = telephone;
         }
+
+        public Client GetClientByNumeroSS(string numeroSS, List<Client> ClientList)
+        {
+            foreach (Client c in ClientList)
+            {
+                if (c.NumeroSS == numeroSS)
+                {
+                    return c;
+                }
+            }
+            throw new Exception("Le client n'existe pas.");
+        }
     }
 }
 
