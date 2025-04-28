@@ -40,6 +40,7 @@ namespace TransConnect.Models
             this.date = date;
             this.prix = prix;
         }
+
         #endregion
 
         #region Getters et Setters

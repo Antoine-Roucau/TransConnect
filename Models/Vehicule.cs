@@ -73,7 +73,7 @@ namespace TransConnect.Models
         #endregion
 
         #region Méthodes
-        public string ObtenirDescription()
+        public string AfficherInfos()
         {
             string description = $"{type} {modele} - {immatriculation}";
             switch (type)

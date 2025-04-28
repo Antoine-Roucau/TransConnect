@@ -1,11 +1,11 @@
-Immatriculation,Type,Modele,Capacite,TarifKilometrique,EstDisponible,SpecificiteVehicule
-AA-123-BB,CamionBenne,Renault T520,25,2.95,true,"Matériaux de construction"
-BB-456-CC,CamionCiterne,Volvo FH16,28000,3.15,true,"Produits liquides alimentaires"
-CC-789-DD,CamionFrigorifique,Mercedes Actros,22,3.25,true,"-20°C"
-DD-012-EE,Camionnette,Fiat Ducato,12,1.95,true,"Transport de mobilier"
-EE-345-FF,Voiture,Tesla Model 3,4,1.50,true,null
-FF-678-GG,CamionFrigorifique,Scania R500,24,3.30,true,"-25°C"
-GG-901-HH,Camionnette,Peugeot Boxer,10,1.85,true,"Livraison express colis"
-HH-234-II,CamionBenne,MAN TGX,22,2.90,true,"Gravats et terre"
-II-567-JJ,CamionCiterne,Iveco Stralis,25000,3.20,true,"Produits chimiques"
-JJ-890-KK,Voiture,Peugeot 508,5,1.45,true,null
+Immatriculation;Type;Modele;Capacite;TarifKilometrique;EstDisponible;SpecificiteVehicule
+AA-123-BB;CamionBenne;Renault T520;25;2,95;true;"Matériaux de construction"
+BB-456-CC;CamionCiterne;Volvo FH16;28000;3,15;true;"Produits liquides alimentaires"
+CC-789-DD;CamionFrigorifique;Mercedes Actros;22;3,25;true;"-20°C"
+DD-012-EE;Camionnette;Fiat Ducato;12;1,95;true;"Transport de mobilier"
+EE-345-FF;Voiture;Tesla Model 3;4;1,50;true;null
+FF-678-GG;CamionFrigorifique;Scania R500;24;3,30;true;"-25°C"
+GG-901-HH;Camionnette;Peugeot Boxer;10;1,85;true;"Livraison express colis"
+HH-234-II;CamionBenne;MAN TGX;22;2,90;true;"Gravats et terre"
+II-567-JJ;CamionCiterne;Iveco Stralis;25000;3,20;true;"Produits chimiques"
+JJ-890-KK;Voiture;Peugeot 508;5;1,45;true;null
