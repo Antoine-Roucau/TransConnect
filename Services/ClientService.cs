@@ -37,6 +37,11 @@ namespace Transconnect.Services
             DataTable dfClientTrieParMontant = vueParMontant.ToTable();
 
             return dfClientTrierParNom;
+
+            //Tri par ville
+            DataView vueParVille = dfClient.DefaultView;
+            vueParVille.Sort = "Adresse Postale ASC";
+            DataTable dfClientTrieParVille = vueParVille.ToTable();
         }
     }
 }
