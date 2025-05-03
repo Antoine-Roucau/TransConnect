@@ -1,11 +1,45 @@
 {
   "version": 3,
   "targets": {
-    "net8.0-windows7.0": {}
+    "net8.0-windows7.0": {
+      "System.Windows.Forms.DataVisualization/1.0.0-prerelease.20110.1": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp3.0/System.Windows.Forms.DataVisualization.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Windows.Forms.DataVisualization.dll": {
+            "related": ".pdb"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.NETCore.App"
+        ]
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "System.Windows.Forms.DataVisualization/1.0.0-prerelease.20110.1": {
+      "sha512": "1EdLFl/I5QobO4shpqUNslDGWTeRbpt3pLMSkiLQYzdWBDqf44/8TM5hXMtkA8ktHU80aVZYVEuxr8vJqcB1Ig==",
+      "type": "package",
+      "path": "system.windows.forms.datavisualization/1.0.0-prerelease.20110.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/netcoreapp3.0/System.Windows.Forms.DataVisualization.dll",
+        "lib/netcoreapp3.0/System.Windows.Forms.DataVisualization.pdb",
+        "ref/netcoreapp3.0/System.Windows.Forms.DataVisualization.dll",
+        "system.windows.forms.datavisualization.1.0.0-prerelease.20110.1.nupkg.sha512",
+        "system.windows.forms.datavisualization.nuspec"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0-windows7.0": []
+    "net8.0-windows7.0": [
+      "System.Windows.Forms.DataVisualization >= 1.0.0-prerelease.20110.1"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\Antoine\\.nuget\\packages\\": {},
@@ -56,6 +90,12 @@
     "frameworks": {
       "net8.0-windows7.0": {
         "targetAlias": "net8.0-windows",
+        "dependencies": {
+          "System.Windows.Forms.DataVisualization": {
+            "target": "Package",
+            "version": "[1.0.0-prerelease.20110.1, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
