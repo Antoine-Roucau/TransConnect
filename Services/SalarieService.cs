@@ -1,12 +1,12 @@
 using System;
 using System.Data;
-using TransConnect.Models;
+using Mod = TransConnect.Models;
 
 namespace Transconnect.Services
 {
     public class SalarieService
     {
-        public DataTable GetSalariesDF(List<Salarie> salarieList)
+        public DataTable GetSalariesDF(List<Mod.Salarie> salarieList)
         {
             DataTable dfSalarie = new DataTable();
             dfSalarie.Columns.Add("Numéro de Sécurité Sociale", typeof(string));
@@ -20,15 +20,15 @@ namespace Transconnect.Services
             dfSalarie.Columns.Add("Poste", typeof(string));
             dfSalarie.Columns.Add("Salaire", typeof(decimal));
 
-            foreach (Salarie s in salarieList)
+            foreach (Mod.Salarie s in salarieList)
             {
                 dfSalarie.Rows.Add(s.NumeroSS, s.Nom, s.Prenom, s.DateNaissance, s.AdressePostale, s.AdresseMail, s.Telephone, s.DateEntree, s.Poste, s.Salaire);
             }
             return dfSalarie;
         }
-        public Salarie TrouverSalarieParNumeroSS(string numeroSS, List<Salarie> salarieList)
+        public Mod.Salarie TrouverSalarieParNumeroSS(string numeroSS, List<Mod.Salarie> salarieList)
         {
-            foreach (Salarie s in salarieList)
+            foreach (Mod.Salarie s in salarieList)
             {
                 if (s.NumeroSS == numeroSS)
                 {
@@ -38,9 +38,9 @@ namespace Transconnect.Services
             throw new Exception("Le salarié n'existe pas.");
         }
 
-        public void AjouterSalarie(Salarie salarie,List<Salarie> salarieList)
+        public void AjouterSalarie(Mod.Salarie salarie,List<Mod.Salarie> salarieList)
         {
-            foreach (Salarie s in salarieList)
+            foreach (Mod.Salarie s in salarieList)
             {
                 if (s.NumeroSS == salarie.NumeroSS)
                 {
@@ -50,7 +50,7 @@ namespace Transconnect.Services
             salarieList.Add(salarie);
         }
 
-        public void SupprimerSalarie(Salarie salarie, List<Salarie> salarieList)
+        public void SupprimerSalarie(Mod.Salarie salarie, List<Mod.Salarie> salarieList)
         {
             if (!salarieList.Contains(salarie))
             {
@@ -59,7 +59,7 @@ namespace Transconnect.Services
             salarieList.Remove(salarie);
         }
 
-        public void ModifierSalarie(Salarie salarie, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, DateTime dateEntree, string poste, decimal salaire, List<Salarie> salarieList)
+        public void ModifierSalarie(Mod.Salarie salarie, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, DateTime dateEntree, string poste, decimal salaire, List<Mod.Salarie> salarieList)
         {
             if (!salarieList.Contains(salarie))
             {
@@ -77,9 +77,54 @@ namespace Transconnect.Services
             salarie.Poste = poste;
             salarie.Salaire = salaire;
         }
-        public void Licenciement(Personne personne)
+        public void LicencierSalarie(Mod.Salarie salarieALicencier, List<Mod.Salarie> salarie)
         {
-            ///a faire une fois que l'on aura la liste des personnes
+            if (salarieALicencier == null)
+            {
+                Console.WriteLine("Le salarié à licencier est nul.");
+                return;
+            }
+
+            if (!salarie.Contains(salarieALicencier))
+            {
+                Console.WriteLine("Le salarié à licencier n'existe pas dans la liste.");
+                return;
+            }
+
+            // Étape 1 : Trouver le supérieur hiérarchique
+            Mod.Salarie superieur = null;
+            foreach (var s in salarie)
+            {
+                if (s.Subordonnes.Contains(salarieALicencier))
+                {
+                    superieur = s;
+                    break;
+                }
+            }
+
+            // Étape 2 : Promouvoir les subordonnés
+            foreach (var subordonne in salarieALicencier.Subordonnes)
+            {
+                if (subordonne == null) continue;
+
+                // Changement de rattachement
+                if (superieur != null)
+                {
+                    superieur.AddSubordonnes(subordonne);
+                }
+
+                // Mise à jour du poste (promotion simplifiée)
+                subordonne.Poste = $"Ancien poste de {salarieALicencier.Nom}";
+            }
+
+            // Étape 3 : Nettoyer la liste des subordonnés du supérieur
+            if (superieur != null)
+            {
+                superieur.SupSubordonnes(salarieALicencier);
+            }
+
+            // Étape 4 : Supprimer le salarié de la liste principale
+            salarie.Remove(salarieALicencier);
         }
     }
 }
