@@ -60,50 +60,38 @@ namespace Transconnect.Services
         public DataTable TrierClientsParMontant(DataTable dfClient)
         {
             DataView vueParMontant = dfClient.DefaultView;
-            vueParMontant.Sort = "Montant Total Achats DESC";
+            vueParMontant.Sort = "Montant_Total_Achats DESC";
             return vueParMontant.ToTable();
         }
 
         public DataTable TrierClientsParVille(DataTable dfClient)
         {
             DataView vueParVille = dfClient.DefaultView;
-            vueParVille.Sort = "Adresse Postale ASC";
+            vueParVille.Sort = "Adresse_Postale ASC";
             return vueParVille.ToTable();
         }
 
         public DataTable TrierClientsParDateNaissance(DataTable dfClient)
         {
             DataView vueParDateNaissance = dfClient.DefaultView;
-            vueParDateNaissance.Sort = "Date de Naissance ASC";
+            vueParDateNaissance.Sort = "Date_de_Naissance ASC";
             return vueParDateNaissance.ToTable();
         }
 
-        public void ModifierClient(Client client, string numeroSS, string nom, string prenom, DateTime dateNaissance, string adressePostale, string adresseMail, string telephone, List<Client> clientList)
+        public void ModifierClient(Client client, Client clientModif, List<Client> clientList)
         {
             if (!clientList.Contains(client))
             {
                 throw new Exception("Le client n'existe pas.");
             }
 
-            client.NumeroSS = numeroSS;
-            client.Nom = nom;
-            client.Prenom = prenom;
-            client.DateNaissance = dateNaissance;
-            client.AdressePostale = adressePostale;
-            client.AdresseMail = adresseMail;
-            client.Telephone = telephone;
-        }
-
-        public Client TouverClientParNumeroSS(string numeroSS, List<Client> clientList)
-        {
-            foreach (Client c in clientList)
-            {
-                if (c.NumeroSS == numeroSS)
-                {
-                    return c;
-                }
-            }
-            throw new Exception("Le client n'existe pas.");
+            client.NumeroSS = clientModif.NumeroSS;
+            client.Nom = clientModif.Nom;
+            client.Prenom = clientModif.Prenom;
+            client.DateNaissance = clientModif.DateNaissance;
+            client.AdressePostale = clientModif.AdressePostale;
+            client.AdresseMail = clientModif.AdresseMail;
+            client.Telephone = clientModif.Telephone;
         }
     }
 }
