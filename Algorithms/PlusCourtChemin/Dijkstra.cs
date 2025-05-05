@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TransConnect.Models.Graphe;
 
-namespace TransConnect.Models.Graphe
+namespace TransConnect.Models.PlusCourtChemin
 {
     public class Dijkstra
     {
