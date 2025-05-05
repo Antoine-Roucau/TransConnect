@@ -172,11 +172,10 @@ namespace TransConnect.UI
             dtClients.Columns.Add("Adresse_Postale", typeof(string));
             dtClients.Columns.Add("Montant_Total_Achats", typeof(decimal));
 
-            for (int i = 0; i < clients.Count; i++)
+            foreach (var client in clients)
             {
-                dtClients.Rows.Add(clients[i].NumeroSS, clients[i].Nom, clients[i].Prenom,clients[i].DateNaissance, clients[i].Telephone, clients[i].AdresseMail, clients[i].AdressePostale, clients[i].MontantTotalAchats);
+                dtClients.Rows.Add(client.NumeroSS, client.Nom, client.Prenom, client.DateNaissance, client.Telephone, client.AdresseMail, client.AdressePostale, client.MontantTotalAchats);
             }
-
             dgvClients.DataSource = dtClients;
         }
 
