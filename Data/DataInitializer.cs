@@ -18,8 +18,8 @@ namespace TransConnect.Data
         public List<String> villes = new List<String>();
         public List<Commande> commandes = new List<Commande>();
 
-        Graphe grapheSalarie = new Graphe(new Salarie("GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", 0));
-        Graphe grapheVille = new Graphe("Ville");
+        public Graphe grapheSalarie = new Graphe(new Salarie("GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", 0));
+        public Graphe grapheVille = new Graphe("Ville");
         #endregion
         #region Constructeur
         public DataInitializer()

@@ -42,7 +42,7 @@ namespace TransConnect.UI
         {
             // Configuration du formulaire
             this.Text = "TransConnect - Gestion des Clients";
-            this.Size = new Size(1000, 700);
+            this.Size = new Size(1500, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
@@ -70,7 +70,7 @@ namespace TransConnect.UI
                 Size = new Size(200, 20),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
-            cmbTri.Items.AddRange(new object[] { "Nom", "Ville", "Montant des achats" });
+            cmbTri.Items.AddRange(new object[] { "Nom", "Ville", "Montant des achats","Date de Naissance" });
             cmbTri.SelectedIndex = 0;
             cmbTri.SelectedIndexChanged += (s, e) => TrierClients();
             this.Controls.Add(cmbTri);
@@ -96,7 +96,7 @@ namespace TransConnect.UI
             dgvClients = new DataGridView
             {
                 Location = new Point(20, 60),
-                Size = new Size(960, 400),
+                Size = new Size(1460, 400),
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 ReadOnly = true,
@@ -112,7 +112,7 @@ namespace TransConnect.UI
             pnlCommandes = new Panel
             {
                 Location = new Point(20, 470),
-                Size = new Size(960, 150),
+                Size = new Size(1460, 150),
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = Color.WhiteSmoke
             };
@@ -172,20 +172,19 @@ namespace TransConnect.UI
 
         private void ChargerClients()
         {
-            // Placeholder - à remplacer par le code réel
             dtClients = new DataTable();
-            dtClients.Columns.Add("Numéro SS", typeof(string));
+            dtClients.Columns.Add("NumeroSS", typeof(string));
             dtClients.Columns.Add("Nom", typeof(string));
-            dtClients.Columns.Add("Prénom", typeof(string));
-            dtClients.Columns.Add("Téléphone", typeof(string));
-            dtClients.Columns.Add("Email", typeof(string));
-            dtClients.Columns.Add("Adresse", typeof(string));
-            dtClients.Columns.Add("Montant Total", typeof(decimal));
+            dtClients.Columns.Add("Prenom", typeof(string));
+            dtClients.Columns.Add("Date de Naissance", typeof(DateTime));
+            dtClients.Columns.Add("Telephone", typeof(string));
+            dtClients.Columns.Add("Adresse Mail", typeof(string));
+            dtClients.Columns.Add("Adresse Postale", typeof(string));
+            dtClients.Columns.Add("Montant Total Achats", typeof(decimal));
 
-            // Simuler quelques données
             for (int i = 0; i < clients.Count; i++)
             {
-                dtClients.Rows.Add(clients[i].NumeroSS, clients[i].Nom, clients[i].Prenom, clients[i].Telephone, clients[i].AdresseMail, clients[i].AdressePostale, clients[i].MontantTotalAchats);
+                dtClients.Rows.Add(clients[i].NumeroSS, clients[i].Nom, clients[i].Prenom,clients[i].DateNaissance, clients[i].Telephone, clients[i].AdresseMail, clients[i].AdressePostale, clients[i].MontantTotalAchats);
             }
 
             dgvClients.DataSource = dtClients;
@@ -193,19 +192,25 @@ namespace TransConnect.UI
 
         private void TrierClients()
         {
-            // Placeholder pour le tri des clients
             if (cmbTri.SelectedIndex == 0) // Nom
             {
-                dtClients.DefaultView.Sort = "Nom ASC";
+                dtClients = clientService.TrierClientsParNom(dtClients);
             }
             else if (cmbTri.SelectedIndex == 1) // Ville
             {
-                dtClients.DefaultView.Sort = "Adresse ASC";
+                dtClients = clientService.TrierClientsParVille(dtClients);
             }
             else if (cmbTri.SelectedIndex == 2) // Montant
             {
-                dtClients.DefaultView.Sort = "Montant Total DESC";
+                dtClients = clientService.TrierClientsParMontant(dtClients);
             }
+            else if (cmbTri.SelectedIndex == 3) // Date de Naissance
+            {
+                dtClients = clientService.TrierClientsParDateNaissance(dtClients);
+            }
+            
+            // Mettre à jour le DataGridView avec les données triées
+            dgvClients.DataSource = dtClients;
         }
 
         private void RechercherClients()
