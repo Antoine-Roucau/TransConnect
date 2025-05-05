@@ -138,9 +138,9 @@ namespace TransConnect.UI
             dtSalaries.Columns.Add("Date_d'entree", typeof(DateTime));
             dtSalaries.Columns.Add("Salaire", typeof(decimal));
 
-            for (int i = 0; i< salaries.Count; i++)
+            foreach (var salarie in salaries)
             {
-                dtSalaries.Rows.Add(salaries[i].NumeroSS, salaries[i].Nom, salaries[i].Prenom, salaries[i].Poste, salaries[i].DateEntree, salaries[i].Salaire);
+                dtSalaries.Rows.Add(salarie.NumeroSS, salarie.Nom, salarie.Prenom, salarie.Poste, salarie.DateEntree, salarie.Salaire);
             }
 
             dgvSalaries.DataSource = dtSalaries;
@@ -201,8 +201,7 @@ namespace TransConnect.UI
 
         private void AjouterSalarie()
         {
-            // Placeholder pour ajouter un salarié
-            MessageBox.Show("Fonctionnalité à implémenter: Ajouter un salarié", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
         }
 
         private void ModifierSalarie()
@@ -248,4 +247,10 @@ namespace TransConnect.UI
             }
         }
     }
+
+
+
+
+
+    
 }

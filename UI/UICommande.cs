@@ -350,18 +350,9 @@ namespace TransConnect.UI
 
         private void PayerCommande()
         {
-            // Placeholder pour payer une commande
-            if (dgvCommandes.SelectedRows.Count == 0)
+            if(dgvCommandes.SelectedRows.Count != 0)
             {
-                MessageBox.Show("Veuillez sélectionner une commande à payer", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            DialogResult result = MessageBox.Show("Marquer cette commande comme payée?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                // Code de paiement
-                MessageBox.Show("Statut de la commande mis à jour : Payée", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //Appel CommandeSercice pour payer la commande
             }
         }
 
