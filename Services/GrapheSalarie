@@ -1,0 +1,14 @@
+using Systems;
+using System.Data;
+using Mod = TransConnect.Models;
+using System.Collections.Generic;
+using TransConnect.Models.Graphe;
+
+namespace TransConnect.Services
+{
+    public class GrapheSalarieService
+    {
+        public Graphe grapheSalarie 
+        
+    }
+}
