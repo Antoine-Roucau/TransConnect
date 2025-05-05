@@ -15,7 +15,6 @@ namespace TransConnect.UI
         private Button btnAjouter;
         private Button btnModifier;
         private Button btnSupprimer;
-        private Button btnAfficherHistorique;
         private Button btnFermer;
         private ComboBox cmbTri;
         private TextBox txtRecherche;
@@ -26,6 +25,7 @@ namespace TransConnect.UI
         private DataInitializer dataInitializer;
         private ClientService clientService;
         private List<Client> clients;
+        private List<Commande> commandes; // A rajouter
         private DataTable dtClients;
 
         public UIClient(DataInitializer dataInitializer)
@@ -149,20 +149,10 @@ namespace TransConnect.UI
             btnSupprimer.Click += (s, e) => SupprimerClient();
             this.Controls.Add(btnSupprimer);
 
-            btnAfficherHistorique = new Button
-            {
-                Text = "Historique complet",
-                Location = new Point(430, 630),
-                Size = new Size(150, 30),
-                BackColor = Color.LightYellow
-            };
-            btnAfficherHistorique.Click += (s, e) => AfficherHistoriqueComplet();
-            this.Controls.Add(btnAfficherHistorique);
-
             btnFermer = new Button
             {
                 Text = "Fermer",
-                Location = new Point(880, 630),
+                Location = new Point(1380, 630),
                 Size = new Size(100, 30),
                 BackColor = Color.LightGray
             };
@@ -176,11 +166,11 @@ namespace TransConnect.UI
             dtClients.Columns.Add("NumeroSS", typeof(string));
             dtClients.Columns.Add("Nom", typeof(string));
             dtClients.Columns.Add("Prenom", typeof(string));
-            dtClients.Columns.Add("Date de Naissance", typeof(DateTime));
+            dtClients.Columns.Add("Date_de_Naissance", typeof(DateTime));
             dtClients.Columns.Add("Telephone", typeof(string));
-            dtClients.Columns.Add("Adresse Mail", typeof(string));
-            dtClients.Columns.Add("Adresse Postale", typeof(string));
-            dtClients.Columns.Add("Montant Total Achats", typeof(decimal));
+            dtClients.Columns.Add("Adresse_Mail", typeof(string));
+            dtClients.Columns.Add("Adresse_Postale", typeof(string));
+            dtClients.Columns.Add("Montant_Total_Achats", typeof(decimal));
 
             for (int i = 0; i < clients.Count; i++)
             {
@@ -215,15 +205,16 @@ namespace TransConnect.UI
 
         private void RechercherClients()
         {
-            // Placeholder pour la recherche
+            dtClients = clientService.TrierClientsParNom(dtClients);
             string recherche = txtRecherche.Text.ToLower();
             if (string.IsNullOrWhiteSpace(recherche))
             {
-                dtClients.DefaultView.RowFilter = "";
+                ChargerClients();
                 return;
             }
 
-            dtClients.DefaultView.RowFilter = $"Nom LIKE '%{recherche}%' OR Prénom LIKE '%{recherche}%' OR Adresse LIKE '%{recherche}%'";
+            dtClients.DefaultView.RowFilter = $"NumeroSS LIKE '%{recherche}%' OR Nom LIKE '%{recherche}%' OR Prenom LIKE '%{recherche}%' OR Adresse_Postale LIKE '%{recherche}%' OR Adresse_Mail LIKE '%{recherche}%' OR Telephone LIKE '%{recherche}%'";
+            dgvClients.DataSource = dtClients;
         }
 
         private void AfficherCommandesClient()
@@ -242,11 +233,10 @@ namespace TransConnect.UI
             };
             pnlCommandes.Controls.Add(lblTitreCommandes);
 
-            // Placeholder: Afficher quelques commandes simulées
             DataGridView dgvCommandes = new DataGridView
             {
                 Location = new Point(10, 35),
-                Size = new Size(940, 105),
+                Size = new Size(1440, 105),
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 ReadOnly = true,
@@ -256,16 +246,12 @@ namespace TransConnect.UI
 
             DataTable dtCommandes = new DataTable();
             dtCommandes.Columns.Add("ID", typeof(int));
-            dtCommandes.Columns.Add("Date", typeof(DateTime));
-            dtCommandes.Columns.Add("Départ", typeof(string));
-            dtCommandes.Columns.Add("Arrivée", typeof(string));
-            dtCommandes.Columns.Add("Prix", typeof(decimal));
+            dtCommandes.Columns.Add("villeDepart", typeof(string));
+            dtCommandes.Columns.Add("villeArrivee", typeof(string));
+            dtCommandes.Columns.Add("date", typeof(DateTime));
+            dtCommandes.Columns.Add("prix", typeof(decimal));
             dtCommandes.Columns.Add("Statut", typeof(string));
 
-            // Simuler quelques commandes
-            dtCommandes.Rows.Add(1, DateTime.Now.AddDays(-5), "Paris", "Lyon", 450.50m, "Payée");
-            dtCommandes.Rows.Add(2, DateTime.Now.AddDays(-2), "Lyon", "Marseille", 320.75m, "En cours");
-            dtCommandes.Rows.Add(3, DateTime.Now, "Marseille", "Nice", 230.00m, "En attente");
 
             dgvCommandes.DataSource = dtCommandes;
             pnlCommandes.Controls.Add(dgvCommandes);
@@ -273,49 +259,263 @@ namespace TransConnect.UI
 
         private void AjouterClient()
         {
-            // Placeholder pour ajouter un client
-            MessageBox.Show("Fonctionnalité à implémenter: Ajouter un client", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            UIAddClient uiAddClient = new UIAddClient(dataInitializer);
+            uiAddClient.ShowDialog();
+            Client nouveauClient = uiAddClient.AjouterClient();
+            if (nouveauClient == null) return; // Si l'utilisateur a annulé l'ajout
+            clientService.AjouterClient(nouveauClient, clients);
+            ChargerClients();
         }
 
         private void ModifierClient()
         {
-            // Placeholder pour modifier un client
-            if (dgvClients.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Veuillez sélectionner un client à modifier", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            Client clientAModifier = clients[dgvClients.SelectedRows[0].Index];
+            UIModifClient uiModifClient = new UIModifClient(dataInitializer,clientAModifier);
+            uiModifClient.ShowDialog();
+            Client clientModifie = uiModifClient.ModifierClient();
+            if (clientModifie == null) return; // Si l'utilisateur a annulé la modification
+            clientService.ModifierClient(clientAModifier, clientModifie, clients);
+            ChargerClients();
 
-            MessageBox.Show("Fonctionnalité à implémenter: Modifier un client", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void SupprimerClient()
         {
-            // Placeholder pour supprimer un client
-            if (dgvClients.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Veuillez sélectionner un client à supprimer", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            DialogResult result = MessageBox.Show("Êtes-vous sûr de vouloir supprimer ce client?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                // Code de suppression
-                MessageBox.Show("Client supprimé avec succès!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            clientService.SupprimerClient(clients[dgvClients.SelectedRows[0].Index], clients);
+            ChargerClients();
         }
 
-        private void AfficherHistoriqueComplet()
-        {
-            // Placeholder pour afficher l'historique complet du client
-            if (dgvClients.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Veuillez sélectionner un client", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+    }
 
-            MessageBox.Show("Fonctionnalité à implémenter: Afficher l'historique complet", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    public class UIAddClient : Form
+    {
+        private TextBox txtNumeroSS;
+        private TextBox txtNom;
+        private TextBox txtPrenom;
+        private TextBox txtDateNaissance;
+        private TextBox txtAdressePostale;
+        private TextBox txtAdresseMail;
+        private TextBox txtTelephone;
+        private Button btnAjouterClient;
+        private Button btnAnnuler;
+        private DataInitializer dataInitializer;
+
+        public UIAddClient(DataInitializer dataInitializer)
+        {
+            this.dataInitializer = dataInitializer;
+            InitializeComponents();
+        }
+
+        private void InitializeComponents()
+        {
+            // Configuration du formulaire
+            this.Text = "Ajouter un Client";
+            this.Size = new Size(400, 400);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.White;
+
+            // Champs de saisie
+            Label numeroSSLabel = new Label { Text = "Numéro de Sécurité Sociale:", Location = new Point(20, 20) };
+            txtNumeroSS = new TextBox { Location = new Point(150, 20), Width = 200 };
+            this.Controls.Add(numeroSSLabel);
+            this.Controls.Add(txtNumeroSS);
+
+            Label lblNom = new Label { Text = "Nom:", Location = new Point(20, 60) };
+            txtNom = new TextBox { Location = new Point(150, 60), Width = 200 };
+            this.Controls.Add(lblNom);
+            this.Controls.Add(txtNom);
+
+            Label lblPrenom = new Label { Text = "Prénom:", Location = new Point(20, 100) };
+            txtPrenom = new TextBox { Location = new Point(150, 100), Width = 200 };
+            this.Controls.Add(lblPrenom);
+            this.Controls.Add(txtPrenom);
+            
+
+            Label lblDateNaissance = new Label { Text = "Date de Naissance:", Location = new Point(20, 140) };
+            txtDateNaissance = new TextBox { Location = new Point(150, 140), Width = 200 };
+            this.Controls.Add(lblDateNaissance);
+            this.Controls.Add(txtDateNaissance);
+
+            Label lblAdressePostale = new Label { Text = "Adresse Postale:", Location = new Point(20, 180) };
+            txtAdressePostale = new TextBox { Location = new Point(150, 180), Width = 200 };
+            this.Controls.Add(lblAdressePostale);
+            this.Controls.Add(txtAdressePostale);
+
+            Label lblAdresseMail = new Label { Text = "Adresse Email:", Location = new Point(20, 220) };
+            txtAdresseMail = new TextBox { Location = new Point(150, 220), Width = 200 };
+            this.Controls.Add(lblAdresseMail);
+            this.Controls.Add(txtAdresseMail);
+
+            Label lblTelephone = new Label { Text = "Telephone :", Location = new Point(20, 260) };
+            txtTelephone = new TextBox { Location = new Point(150, 260), Width = 200 };
+            this.Controls.Add(lblTelephone);
+            this.Controls.Add(txtTelephone);
+
+            // Boutons
+            btnAjouterClient = new Button
+            {
+                Text = "Ajouter Client",
+                Location = new Point(80, 300),
+                Size = new Size(120,30),
+                BackColor = Color.LightGreen
+            };
+            btnAjouterClient.Click += (s, e) => AjouterClient();
+            this.Controls.Add(btnAjouterClient);
+            
+            btnAnnuler = new Button
+            {
+                Text = "Annuler",
+                Location = new Point(220, 300),
+                Size = new Size(120,30),
+                BackColor = Color.LightCoral
+            };
+            btnAnnuler.Click += (s, e) => this.Close();
+            this.Controls.Add(btnAnnuler);
+        }
+
+        public Client AjouterClient()
+        {
+            if (string.IsNullOrWhiteSpace(txtNumeroSS.Text) || string.IsNullOrWhiteSpace(txtNom.Text) || string.IsNullOrWhiteSpace(txtPrenom.Text))
+            {
+                return null;
+            }
+            string numeroSS = txtNumeroSS.Text;
+            string nom = txtNom.Text;
+            string prenom = txtPrenom.Text;
+            DateTime dateNaissance = DateTime.Now;
+            if (txtDateNaissance.Text !="")
+            { 
+                dateNaissance = DateTime.Parse(txtDateNaissance.Text);
+            }
+            string adressePostale = txtAdressePostale.Text;
+            string adresseMail = txtAdresseMail.Text;
+            string telephone = txtTelephone.Text;
+
+            Client client = new Client(numeroSS,nom, prenom, dateNaissance, adressePostale, adresseMail, telephone);
+            
+            this.Close();
+            return client;
+        }
+    
+    }
+
+    public class UIModifClient : Form 
+    {
+        private TextBox txtNumeroSS;
+        private TextBox txtNom;
+        private TextBox txtPrenom;
+        private TextBox txtDateNaissance;
+        private TextBox txtAdressePostale;
+        private TextBox txtAdresseMail;
+        private TextBox txtTelephone;
+        private Button btnModifierClient;
+        private Button btnAnnuler;
+        private DataInitializer dataInitializer;
+
+        public UIModifClient(DataInitializer dataInitializer, Client clientAModifier)
+        {
+            this.dataInitializer = dataInitializer;
+            InitializeComponents(clientAModifier);
+        }
+
+        private void InitializeComponents(Client clientAModifier)
+        {
+        
+            // Configuration du formulaire
+            this.Text = "Modifier un Client";
+            this.Size = new Size(400, 400);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.White;
+
+            // Champs de saisie
+            Label numeroSSLabel = new Label { Text = "Numéro de Sécurité Sociale:", Location = new Point(20, 20) };
+            txtNumeroSS = new TextBox { Location = new Point(150, 20), Width = 200 };
+            this.Controls.Add(numeroSSLabel);
+            txtNumeroSS.Text = clientAModifier.NumeroSS;
+            this.Controls.Add(txtNumeroSS);
+
+            Label lblNom = new Label { Text = "Nom:", Location = new Point(20, 60) };
+            txtNom = new TextBox { Location = new Point(150, 60), Width = 200 };
+            this.Controls.Add(lblNom);
+            txtNom.Text = clientAModifier.Nom;
+            this.Controls.Add(txtNom);
+
+            Label lblPrenom = new Label { Text = "Prénom:", Location = new Point(20, 100) };
+            txtPrenom = new TextBox { Location = new Point(150, 100), Width = 200 };
+            this.Controls.Add(lblPrenom);
+            txtPrenom.Text = clientAModifier.Prenom;
+            this.Controls.Add(txtPrenom);
+
+
+            Label lblDateNaissance = new Label { Text = "Date de Naissance:", Location = new Point(20, 140) };
+            txtDateNaissance = new TextBox { Location = new Point(150, 140), Width = 200 };
+            this.Controls.Add(lblDateNaissance);
+            txtDateNaissance.Text = clientAModifier.DateNaissance.ToString("yyyy-MM-dd");
+            this.Controls.Add(txtDateNaissance);
+
+            Label lblAdressePostale = new Label { Text = "Adresse Postale:", Location = new Point(20, 180) };
+            txtAdressePostale = new TextBox { Location = new Point(150, 180), Width = 200 };
+            this.Controls.Add(lblAdressePostale);
+            txtAdressePostale.Text = clientAModifier.AdressePostale;
+            this.Controls.Add(txtAdressePostale);
+
+            Label lblAdresseMail = new Label { Text = "Adresse Email:", Location = new Point(20, 220) };
+            txtAdresseMail = new TextBox { Location = new Point(150, 220), Width = 200 };
+            this.Controls.Add(lblAdresseMail);
+            txtAdresseMail.Text = clientAModifier.AdresseMail;
+            this.Controls.Add(txtAdresseMail);
+
+            Label lblTelephone = new Label { Text = "Telephone :", Location = new Point(20, 260) };
+            txtTelephone = new TextBox { Location = new Point(150, 260), Width = 200 };
+            this.Controls.Add(lblTelephone);
+            txtTelephone.Text = clientAModifier.Telephone;
+            this.Controls.Add(txtTelephone);
+
+            // Boutons
+            btnModifierClient = new Button
+            {
+                Text = "Modifier Client",
+                Location = new Point(80, 300),
+                Size = new Size(120,30),
+                BackColor = Color.LightGreen
+            };
+            btnModifierClient.Click += (s, e) => ModifierClient();
+            this.Controls.Add(btnModifierClient);
+            
+            btnAnnuler = new Button
+            {
+                Text = "Annuler",
+                Location = new Point(220, 300),
+                Size = new Size(120,30),
+                BackColor = Color.LightCoral
+            };
+            btnAnnuler.Click += (s, e) => this.Close();
+            this.Controls.Add(btnAnnuler);
+
+        }
+
+        public Client ModifierClient()
+        {
+            if (string.IsNullOrWhiteSpace(txtNumeroSS.Text) || string.IsNullOrWhiteSpace(txtNom.Text) || string.IsNullOrWhiteSpace(txtPrenom.Text))
+            {
+                return null;
+            }
+            string numeroSS = txtNumeroSS.Text;
+            string nom = txtNom.Text;
+            string prenom = txtPrenom.Text;
+            DateTime dateNaissance = DateTime.Now;
+            if (txtDateNaissance.Text !="")
+            { 
+                dateNaissance = DateTime.Parse(txtDateNaissance.Text);
+            }
+            string adressePostale = txtAdressePostale.Text;
+            string adresseMail = txtAdresseMail.Text;
+            string telephone = txtTelephone.Text;
+
+            Client client = new Client(numeroSS,nom, prenom, dateNaissance, adressePostale, adresseMail, telephone);
+            
+            this.Close();
+            return client;
         }
     }
 }
