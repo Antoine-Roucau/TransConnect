@@ -1,24 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TransConnect.Models.Graphe;
+using Gra = TransConnect.Models.Graphe;
 
-namespace TransConnect.Models.Graphe
+namespace TransConnect.Algorithms.PlusCourtChemin
 {
     public class BellmanFord
     {
-        private Graphe _graphe;
-        private Dictionary<Noeud, double> _distances;
-        private Dictionary<Noeud, Noeud> _predecesseurs;
+        private Gra.Graphe _graphe;
+        private Dictionary<Gra.Noeud, double> _distances;
+        private Dictionary<Gra.Noeud, Gra.Noeud> _predecesseurs;
 
-        public BellmanFord(Graphe graphe)
+        public BellmanFord(Gra.Graphe graphe)
         {
             _graphe = graphe;
-            _distances = new Dictionary<Noeud, double>();
-            _predecesseurs = new Dictionary<Noeud, Noeud>();
+            _distances = new Dictionary<Gra.Noeud, double>();
+            _predecesseurs = new Dictionary<Gra.Noeud, Gra.Noeud>();
         }
 
-        public bool CalculerPlusCourtsChemins(Noeud source)
+        public bool CalculerPlusCourtsChemins(Gra.Noeud source)
         {
             // Initialisation
             foreach (var noeud in _graphe.Noeuds)
@@ -50,7 +50,7 @@ namespace TransConnect.Models.Graphe
             return true;
         }
 
-        private bool Relaxer(Lien lien, bool verifierSeulement = false)
+        private bool Relaxer(Gra.Lien lien, bool verifierSeulement = false)
         {
             var u = lien.Noeud1;
             var v = lien.Noeud2;
@@ -77,9 +77,9 @@ namespace TransConnect.Models.Graphe
             return false;
         }
 
-        public List<Noeud> RecupererChemin(Noeud destination)
+        public List<Gra.Noeud> RecupererChemin(Gra.Noeud destination)
         {
-            var chemin = new List<Noeud>();
+            var chemin = new List<Gra.Noeud>();
             var courant = destination;
 
             while (courant != null)
@@ -91,7 +91,7 @@ namespace TransConnect.Models.Graphe
             return chemin;
         }
 
-        public double GetDistance(Noeud noeud)
+        public double GetDistance(Gra.Noeud noeud)
         {
             return _distances.ContainsKey(noeud) ? _distances[noeud] : double.PositiveInfinity;
         }

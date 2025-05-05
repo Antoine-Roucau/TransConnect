@@ -27,7 +27,7 @@ namespace TransConnect.UI
         {
             // Configuration du formulaire
             this.Text = "TransConnect - Gestion de Transport Routier";
-            this.Size = new Size(800, 600);
+            this.Size = new Size(1000, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;

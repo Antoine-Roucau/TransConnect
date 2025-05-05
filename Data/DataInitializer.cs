@@ -12,11 +12,11 @@ namespace TransConnect.Data
     public class DataInitializer
     {
         #region  Propriétés
-        List<Salarie> salaries = new List<Salarie>();
-        List<Vehicule> vehicules = new List<Vehicule>();
-        List<Client> clients = new List<Client>();
-        List<String> villes = new List<String>();
-        List<Commande> commandes = new List<Commande>();
+        public List<Salarie> salaries = new List<Salarie>();
+        public List<Vehicule> vehicules = new List<Vehicule>();
+        public List<Client> clients = new List<Client>();
+        public List<String> villes = new List<String>();
+        public List<Commande> commandes = new List<Commande>();
 
         Graphe grapheSalarie = new Graphe(new Salarie("GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", "GrapheSalarie", "GrapheSalarie", DateTime.Now, "GrapheSalarie", 0));
         Graphe grapheVille = new Graphe("Ville");
