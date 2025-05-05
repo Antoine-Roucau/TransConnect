@@ -16,3 +16,12 @@ C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\obj\Debug\net8.0-
 C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.csproj.AssemblyReference.cache
 C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\bin\Debug\net8.0-windows\System.Windows.Forms.DataVisualization.dll
 C:\Users\Antoine\OneDrive\Bordel\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransCon.CE5078DA.Up2Date
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.csproj.AssemblyReference.cache
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.AssemblyInfoInputs.cache
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.AssemblyInfo.cs
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.csproj.CoreCompileInputs.cache
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.sourcelink.json
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.dll
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\refint\TransConnect.dll
+C:\Users\maxmo\Documents\GitHub\TransConnect\obj\Debug\net8.0-windows\TransConnect.pdb

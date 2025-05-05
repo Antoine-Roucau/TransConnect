@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TransConnect.Models.Graphe;
+using Gra = TransConnect.Models.Graphe;
 
-namespace TransConnect.Models.Graphe
+namespace TransConnect.Algorithms.PlusCourtChemin
 {
     public class Dijkstra
     {
-        public static List<Noeud> TrouverCheminLePlusCourt(Graphe graphe, Noeud source, Noeud destination)
+        public static List<Gra.Noeud> TrouverCheminLePlusCourt(Gra.Graphe graphe, Gra.Noeud source, Gra.Noeud destination)
         {
             // Dictionnaires pour stocker les distances et les prédecesseurs
-            Dictionary<Noeud, double> distances = new Dictionary<Noeud, double>();
-            Dictionary<Noeud, Noeud> predecesseurs = new Dictionary<Noeud, Noeud>();
+            Dictionary<Gra.Noeud, double> distances = new Dictionary<Gra.Noeud, double>();
+            Dictionary<Gra.Noeud, Gra.Noeud> predecesseurs = new Dictionary<Gra.Noeud, Gra.Noeud>();
             
             // Initialiser toutes les distances à l'infini et les prédecesseurs à null
             foreach (var noeud in graphe.Noeuds)
@@ -24,7 +24,7 @@ namespace TransConnect.Models.Graphe
             distances[source] = 0;
 
             // Liste des noeuds non visités
-            var nonVisites = new List<Noeud>(graphe.Noeuds);
+            var nonVisites = new List<Gra.Noeud>(graphe.Noeuds);
 
             while (nonVisites.Count > 0)
             {
@@ -34,7 +34,7 @@ namespace TransConnect.Models.Graphe
                 // Si on a atteint la destination, on peut revenir en arrière pour reconstruire le chemin
                 if (noeudActuel == destination)
                 {
-                    var chemin = new List<Noeud>();
+                    var chemin = new List<Gra.Noeud>();
                     while (predecesseurs[noeudActuel] != null)
                     {
                         chemin.Insert(0, noeudActuel);
