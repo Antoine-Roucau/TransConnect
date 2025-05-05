@@ -32,11 +32,7 @@ namespace TransConnect.UI
         {
             this.dataInitializer = dataInitializer;
             this.clientService = new ClientService();
-            
-            // À remplacer par les données réelles quand l'accès aux clients sera disponible
-            this.clients = new List<Client>();
-            // Simulation de récupération des données
-            // this.clients = dataInitializer.Clients;
+            this.clients = dataInitializer.clients;
             
             InitializeComponents();
             ChargerClients();
