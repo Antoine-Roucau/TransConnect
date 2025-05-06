@@ -19,12 +19,15 @@ namespace TransConnect.UI
         private Panel pnlInfos;
         private Label lblTitre;
         private DataInitializer dataInitializer;
+        private List<Salarie> salaries;
         private SalarieService salarieService;
 
         public UISalarie(DataInitializer dataInitializer)
         {
             this.dataInitializer = dataInitializer;
             this.salarieService = new SalarieService();
+            this.salaries = dataInitializer.salaries;
+
             InitializeComponents();
             ChargerSalaries();
         }
@@ -127,20 +130,18 @@ namespace TransConnect.UI
 
         private void ChargerSalaries()
         {
-            // Placeholder - à remplacer par le code réel
             DataTable dtSalaries = new DataTable();
-            dtSalaries.Columns.Add("Numéro SS", typeof(string));
+            dtSalaries.Columns.Add("NumeroSS", typeof(string));
             dtSalaries.Columns.Add("Nom", typeof(string));
-            dtSalaries.Columns.Add("Prénom", typeof(string));
+            dtSalaries.Columns.Add("Prenom", typeof(string));
             dtSalaries.Columns.Add("Poste", typeof(string));
-            dtSalaries.Columns.Add("Date d'entrée", typeof(DateTime));
+            dtSalaries.Columns.Add("Date_d'entree", typeof(DateTime));
             dtSalaries.Columns.Add("Salaire", typeof(decimal));
 
-            // Simuler quelques données
-            dtSalaries.Rows.Add("123456789012345", "Dupond", "Michel", "Directeur Général", new DateTime(2005, 6, 1), 9000.00m);
-            dtSalaries.Rows.Add("987654321098765", "Fiesta", "Sophie", "Directrice Commerciale", new DateTime(2010, 9, 15), 7500.00m);
-            dtSalaries.Rows.Add("456789123456789", "Fetard", "Julien", "Directeur des Opérations", new DateTime(2008, 3, 10), 7200.00m);
-            dtSalaries.Rows.Add("258369741963852", "Romu", "David", "Chauffeur", new DateTime(2017, 3, 10), 3800.00m);
+            foreach (var salarie in salaries)
+            {
+                dtSalaries.Rows.Add(salarie.NumeroSS, salarie.Nom, salarie.Prenom, salarie.Poste, salarie.DateEntree, salarie.Salaire);
+            }
 
             dgvSalaries.DataSource = dtSalaries;
         }
@@ -154,7 +155,7 @@ namespace TransConnect.UI
 
             var row = dgvSalaries.SelectedRows[0];
             string nom = row.Cells["Nom"].Value.ToString();
-            string prenom = row.Cells["Prénom"].Value.ToString();
+            string prenom = row.Cells["Prenom"].Value.ToString();
             string poste = row.Cells["Poste"].Value.ToString();
 
             Label lblInfos = new Label
@@ -200,8 +201,7 @@ namespace TransConnect.UI
 
         private void AjouterSalarie()
         {
-            // Placeholder pour ajouter un salarié
-            MessageBox.Show("Fonctionnalité à implémenter: Ajouter un salarié", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
         }
 
         private void ModifierSalarie()
@@ -247,4 +247,10 @@ namespace TransConnect.UI
             }
         }
     }
+
+
+
+
+
+    
 }

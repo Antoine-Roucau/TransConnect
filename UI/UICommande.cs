@@ -35,10 +35,12 @@ namespace TransConnect.UI
         private Panel pnlItineraire;
         
         private DataInitializer dataInitializer;
+        private List<Commande> commandes = new List<Commande>();
 
         public UICommande(DataInitializer dataInitializer)
         {
             this.dataInitializer = dataInitializer;
+            this.commandes = dataInitializer.commandes;
             InitializeComponents();
             ChargerCommandes();
         }
@@ -47,7 +49,7 @@ namespace TransConnect.UI
         {
             // Configuration du formulaire
             this.Text = "TransConnect - Gestion des Commandes";
-            this.Size = new Size(1000, 700);
+            this.Size = new Size(1500, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
@@ -55,7 +57,7 @@ namespace TransConnect.UI
             tabCommandes = new TabControl
             {
                 Location = new Point(20, 20),
-                Size = new Size(960, 600),
+                Size = new Size(1460, 600),
                 Font = new Font("Arial", 10)
             };
             this.Controls.Add(tabCommandes);
@@ -72,7 +74,7 @@ namespace TransConnect.UI
             dgvCommandes = new DataGridView
             {
                 Location = new Point(10, 10),
-                Size = new Size(930, 500),
+                Size = new Size(1430, 500),
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 ReadOnly = true,
@@ -310,12 +312,10 @@ namespace TransConnect.UI
             dtCommandes.Columns.Add("Chauffeur", typeof(string));
             dtCommandes.Columns.Add("Véhicule", typeof(string));
 
-            // Simuler quelques données
-            dtCommandes.Rows.Add(1, "Dupont Jean", new DateTime(2024, 3, 20), "Paris", "Lyon", 450.75m, "Payée", "Romu David", "Camion-citerne");
-            dtCommandes.Rows.Add(2, "Martin Sophie", new DateTime(2024, 3, 22), "Lyon", "Marseille", 320.50m, "En cours", "Romi Claire", "Camion frigorifique");
-            dtCommandes.Rows.Add(3, "Bernard Paul", new DateTime(2024, 3, 25), "Bordeaux", "Paris", 580.25m, "En attente", "Roma Nicolas", "Camionnette");
-            dtCommandes.Rows.Add(4, "Dupont Jean", new DateTime(2024, 4, 15), "Paris", "Bordeaux", 560.40m, "En attente", "Romu David", "Camion-citerne");
-
+            foreach (var commande in commandes)
+            {
+                dtCommandes.Rows.Add(commande.Id, commande.Client.Nom, commande.Date, commande.VilleDepart,commande.VilleArrivee,commande.Prix, commande.Statut.ToString(),commande.Chauffeur.Nom,commande.Vehicule.Type.ToString());
+            }
             dgvCommandes.DataSource = dtCommandes;
         }
 
@@ -350,18 +350,9 @@ namespace TransConnect.UI
 
         private void PayerCommande()
         {
-            // Placeholder pour payer une commande
-            if (dgvCommandes.SelectedRows.Count == 0)
+            if(dgvCommandes.SelectedRows.Count != 0)
             {
-                MessageBox.Show("Veuillez sélectionner une commande à payer", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            DialogResult result = MessageBox.Show("Marquer cette commande comme payée?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                // Code de paiement
-                MessageBox.Show("Statut de la commande mis à jour : Payée", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //Appel CommandeSercice pour payer la commande
             }
         }
 
