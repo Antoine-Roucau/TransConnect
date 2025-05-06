@@ -77,7 +77,7 @@ namespace Transconnect.Services
             salarie.Poste = poste;
             salarie.Salaire = salaire;
         }
-        public void LicencierSalarie(Mod.Salarie salarieALicencier, List<Mod.Salarie> salarie)
+        public void LicencierSalarie(Mod.Salarie salarieALicencier, List<Mod.Salarie> salarie, OrganigrammeService graphe)
         {
             if (salarieALicencier == null)
             {
@@ -125,6 +125,17 @@ namespace Transconnect.Services
 
             // Étape 4 : Supprimer le salarié de la liste principale
             salarie.Remove(salarieALicencier);
+
+            // Étape 5 : Supprimer le nœud dans le graphe
+            var noeudASupprimer = graphe.TrouverNoeudParSalarieNumeroSS(salarieALicencier.NumeroSS);
+            if (noeudASupprimer != null)
+            {
+                graphe.SupprimerNoeud(noeudASupprimer);
+            }
+            else
+            {
+                Console.WriteLine("Noeud du salarié non trouvé dans le graphe.");
+            }
         }
     }
 }
