@@ -1,29 +1,29 @@
 using System;
 using System.Collections.Generic;
-using Mod = Transconnect.Models;
+using Transconnect.Models;
 
 namespace Transconnect.Services
 {
     public class CommandeService
     {
-        private readonly List<Mod.Commande> _commandes;
+        private readonly List<Commande> _commandes;
 
         public CommandeService()
         {
-            _commandes = new List<Mod.Commande>();
+            _commandes = new List<Commande>();
         }
 
-        public void AjouterCommande(Mod.Commande commande)
+        public void AjouterCommande(Commande commande)
         {
             _commandes.Add(commande);
         }
 
-        public List<Mod.Commande> GetCommandes()
+        public List<Commande> GetCommandes()
         {
             return _commandes;
         }
 
-        public void SupprimerCommande(Guid id)
+        public void SupprimerCommande(int id)
         {
             var commande = _commandes.Find(c => c.Id == id);
             if (commande != null)
@@ -32,28 +32,33 @@ namespace Transconnect.Services
             }
         }
 
-        public void ModifierCommande(Guid id, Mod.Commande nouvelleCommande)
+        public void ModifierCommande(int id, Commande nouvelleCommande)
         {
             var commande = _commandes.Find(c => c.Id == id);
             if (commande != null)
             {
                 commande.Client = nouvelleCommande.Client;
-                commande.Produits = nouvelleCommande.Produits;
-                commande.DateCommande = nouvelleCommande.DateCommande;
+                commande.VilleDepart = nouvelleCommande.VilleDepart;
+                commande.VilleArrivee = nouvelleCommande.VilleArrivee;
+                commande.Date = nouvelleCommande.Date;
+                commande.Prix = nouvelleCommande.Prix;
                 commande.Statut = nouvelleCommande.Statut;
+                commande.Chauffeur = nouvelleCommande.Chauffeur;
+                commande.Vehicule = nouvelleCommande.Vehicule;
             }
         }
 
-        public List<Mod.Commande> TrierCommandesParDate()
+        public List<Commande> TrierCommandesParDate()
         {
-            List<Mod.Commande> commandesTriees = new List<Mod.Commande>(_commandes);
-            commandesTriees.Sort((c1, c2) => c1.DateCommande.CompareTo(c2.DateCommande));
+            List<Commande> commandesTriees = new List<Commande>(_commandes);
+            commandesTriees.Sort((c1, c2) => c1.Date.CompareTo(c2.Date));
             return commandesTriees;
         }
 
-        public List<Mod.Commande> CommandeTrierParClient(string client)
+        public List<Commande> CommandesTrieesParClient(string nomClient)
         {
-            return _commandes.FindAll(c => c.Mod.Client.Equals(client, StringComparison.OrdinalIgnoreCase));
+            return _commandes.FindAll(c => c.Client != null &&
+                                          c.Client.Nom.Equals(nomClient, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
