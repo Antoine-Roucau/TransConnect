@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using TransConnect.Models;
 
-namespace TransConnect.Services
+namespace Transconnect.Services
 {
     public class OrganigrammeService
     {
-        private Dictionary<Salarie, List<Salarie>> graphe;
+        public Dictionary<Salarie, List<Salarie>> graphe;
 
         public OrganigrammeService(Dictionary<Salarie, List<Salarie>> grapheInitial)
         {
@@ -71,6 +71,18 @@ namespace TransConnect.Services
             }
             // Aucun lien trouvé
             return false;
+        }
+
+        public Salarie TrouverSuperieur(Salarie subordonne)
+        {
+            foreach (var entry in graphe)
+            {
+                if (entry.Value.Contains(subordonne))
+                {
+                    return entry.Key;
+                }
+            }
+            return null;
         }
     }
 }

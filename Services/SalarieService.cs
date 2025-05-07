@@ -77,7 +77,7 @@ namespace Transconnect.Services
             salarie.Poste = poste;
             salarie.Salaire = salaire;
         }
-        public void LicencierSalarie(Mod.Salarie salarieALicencier, List<Mod.Salarie> salarie, OrganigrammeService graphe)
+        public void LicencierSalarie(Mod.Salarie salarieALicencier, List<Mod.Salarie> salarieList, OrganigrammeService graphe)
         {
             if (salarieALicencier == null)
             {
@@ -85,57 +85,43 @@ namespace Transconnect.Services
                 return;
             }
 
-            if (!salarie.Contains(salarieALicencier))
+            if (!salarieList.Contains(salarieALicencier))
             {
                 Console.WriteLine("Le salarié à licencier n'existe pas dans la liste.");
                 return;
             }
 
-            // Étape 1 : Trouver le supérieur hiérarchique
-            Mod.Salarie superieur = null;
-            foreach (var s in salarie)
-            {
-                if (s.Subordonnes.Contains(salarieALicencier))
-                {
-                    superieur = s;
-                    break;
-                }
-            }
+            // Étape 1 : Trouver le supérieur hiérarchique via le graphe
+            var superieur = graphe.TrouverSuperieur(salarieALicencier);
 
             // Étape 2 : Promouvoir les subordonnés
-            foreach (var subordonne in salarieALicencier.Subordonnes)
+            var subordonnes = graphe.ObtenirSubordonnes(salarieALicencier);
+
+            foreach (var sub in subordonnes)
             {
-                if (subordonne == null) continue;
+                if (sub == null) continue;
 
                 // Changement de rattachement
                 if (superieur != null)
                 {
-                    superieur.AddSubordonnes(subordonne);
+                    graphe.AjouterRelation(superieur, sub);
                 }
 
-                // Mise à jour du poste (promotion simplifiée)
-                subordonne.Poste = $"Ancien poste de {salarieALicencier.Nom}";
+                sub.Poste = $"Ancien poste de {salarieALicencier.Nom}";
             }
 
-            // Étape 3 : Nettoyer la liste des subordonnés du supérieur
+            // Étape 3 : Supprimer les relations du salarié licencié
             if (superieur != null)
             {
-                superieur.SupSubordonnes(salarieALicencier);
+                graphe.SupprimerRelation(superieur, salarieALicencier);
             }
 
-            // Étape 4 : Supprimer le salarié de la liste principale
-            salarie.Remove(salarieALicencier);
+            // Étape 4 : Supprimer ses subordonnés dans le graphe
+            graphe.graphe.Remove(salarieALicencier);
 
-            // Étape 5 : Supprimer le nœud dans le graphe
-            var noeudASupprimer = graphe.TrouverNoeudParSalarieNumeroSS(salarieALicencier.NumeroSS);
-            if (noeudASupprimer != null)
-            {
-                graphe.SupprimerNoeud(noeudASupprimer);
-            }
-            else
-            {
-                Console.WriteLine("Noeud du salarié non trouvé dans le graphe.");
-            }
+            // Étape 5 : Retirer le salarié de la liste
+            salarieList.Remove(salarieALicencier);
         }
+
     }
 }
