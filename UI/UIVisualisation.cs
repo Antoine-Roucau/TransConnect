@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using TransConnect.Algorithms.PlusCourtChemin;
-using TransConnect.Algorithms.Parcours;
-using TransConnect.Data;
-using TransConnect.Models.Graphe;
+using Transconnect.Algorithms.PlusCourtChemin;
+using Transconnect.Algorithms.Parcours;
+using Transconnect.Data;
+using Transconnect.Models.Graphe;
 
-namespace TransConnect.UI
+namespace Transconnect.UI
 {
     public class UIVisualisation : Form
     {

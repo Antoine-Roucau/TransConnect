@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using TransConnect.Data;
-using TransConnect.UI;
+using Transconnect.Data;
+using Transconnect.UI;
 
-namespace TransConnect.UI
+namespace Transconnect.UI
 {
     public class MenuPrincipal : Form
     {

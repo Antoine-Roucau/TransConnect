@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Gra = TransConnect.Models.Graphe;
+using Gra = Transconnect.Models.Graphe;
 
-namespace TransConnect.Algorithms.Parcours
+namespace Transconnect.Algorithms.Parcours
 {
     public class ParcoursProfondeur
     {

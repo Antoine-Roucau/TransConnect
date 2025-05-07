@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using TransConnect.Data;
-using TransConnect.Models;
+using Transconnect.Data;
+using Transconnect.Models;
 using Transconnect.Services;
 
-namespace TransConnect.UI
+namespace Transconnect.UI
 {
     public class UIClient : Form
     {

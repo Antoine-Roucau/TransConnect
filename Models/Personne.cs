@@ -1,6 +1,6 @@
 using System;
 
-namespace TransConnect.Models
+namespace Transconnect.Models
 {
     public abstract class Personne
     {

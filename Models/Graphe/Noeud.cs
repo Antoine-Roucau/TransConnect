@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace TransConnect.Models.Graphe
+namespace Transconnect.Models.Graphe
 {
 
     public class Noeud 

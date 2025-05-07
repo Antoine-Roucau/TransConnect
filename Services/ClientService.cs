@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.Collections.Generic; // pour List<Client>
-using TransConnect.Models;
+using Transconnect.Models;
 using System.Runtime.CompilerServices;
 
 namespace Transconnect.Services

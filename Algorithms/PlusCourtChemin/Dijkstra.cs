@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gra = TransConnect.Models.Graphe;
+using Gra = Transconnect.Models.Graphe;
 
-namespace TransConnect.Algorithms.PlusCourtChemin
+namespace Transconnect.Algorithms.PlusCourtChemin
 {
     public class Dijkstra
     {

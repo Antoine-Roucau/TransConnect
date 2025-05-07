@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using TransConnect.Models;
+using Transconnect.Models;
 
 namespace Transconnect.Services
 {

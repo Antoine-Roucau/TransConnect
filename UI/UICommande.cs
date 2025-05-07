@@ -2,11 +2,11 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using TransConnect.Data;
-using TransConnect.Models;
-using TransConnect.Models.Graphe;
+using Transconnect.Data;
+using Transconnect.Models;
+using Transconnect.Models.Graphe;
 
-namespace TransConnect.UI
+namespace Transconnect.UI
 {
     public class UICommande : Form
     {

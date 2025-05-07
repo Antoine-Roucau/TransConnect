@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TransConnect.Models;
-using TransConnect.Models.Graphe;
+using Transconnect.Models;
+using Transconnect.Models.Graphe;
 
-namespace TransConnect.UI
+namespace Transconnect.UI
 {
     public class OrganigrammeVisualiseur
     {

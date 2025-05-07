@@ -1,6 +1,6 @@
 using System;
 using System.Data;
-using Mod = TransConnect.Models;
+using Mod = Transconnect.Models;
 
 namespace Transconnect.Services
 {

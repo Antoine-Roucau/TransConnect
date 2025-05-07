@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TransConnect.Models.Graphe
+namespace Transconnect.Models.Graphe
 {
     public class Graphe 
     {

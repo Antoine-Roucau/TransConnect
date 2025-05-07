@@ -3,9 +3,9 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using TransConnect.Data;
+using Transconnect.Data;
 
-namespace TransConnect.UI
+namespace Transconnect.UI
 {
     public class UIStatistique : Form
     {

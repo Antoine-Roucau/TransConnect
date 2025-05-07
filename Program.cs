@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using TransConnect.Data;
-using TransConnect.UI;
+using Transconnect.Data;
+using Transconnect.UI;
 
-namespace TransConnect
+namespace Transconnect
 {
     class Program
     {

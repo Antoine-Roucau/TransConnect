@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
-using TransConnect.Models;
+using Transconnect.Models;
 using Transconnect.Services;
-using TransConnect.Models.Graphe;
-using TransConnect.UI;
+using Transconnect.Models.Graphe;
+using Transconnect.UI;
 
-namespace TransConnect.Data
+namespace Transconnect.Data
 {
     public class DataInitializer
     {
