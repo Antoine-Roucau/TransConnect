@@ -573,8 +573,13 @@ namespace Transconnect.UI
 
 
             decimal prixKm = dataInitializer.vehicules[cmbVehicule.SelectedIndex].TarifKilometrique;
-        
-            decimal prix = distance * prixKm;
+            Salarie chauffeur = dataInitializer.salaries[cmbChauffeur.SelectedIndex];
+            decimal primeChauffeur = 0;
+            if (DateTime.Now - chauffeur.DateEntree > TimeSpan.FromDays(365))
+            {
+                primeChauffeur = 100;
+            }
+            decimal prix = distance * prixKm + primeChauffeur;
             lblPrix.Text = $"{prix:C}";
 
             Label lblInfosPrix = new Label

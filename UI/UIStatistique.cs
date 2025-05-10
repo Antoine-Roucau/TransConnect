@@ -4,6 +4,13 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Transconnect.Data;
+using Transconnect.Models;
+using Transconnect.Models.Graphe;
+using System.Linq;
+using System.Collections.Generic;
+using Transconnect.Algorithms.PlusCourtChemin;
+using Transconnect.Algorithms.CalculDistance;
+using Transconnect.Services;
 
 namespace Transconnect.UI
 {
@@ -28,10 +35,26 @@ namespace Transconnect.UI
         private Button btnFiltrer;
         
         private DataInitializer dataInitializer;
+        private List<Salarie> chauffeurs = new List<Salarie>();
+        private List<Client> clients = new List<Client>();
+        private List<Commande> commandes = new List<Commande>();
+        private Graphe graphe;
+        private StatistiqueService statistiqueService = new StatistiqueService();
 
         public UIStatistique(DataInitializer dataInitializer)
         {
             this.dataInitializer = dataInitializer;
+            this.clients = dataInitializer.clients;
+            this.commandes = dataInitializer.commandes;
+            this.graphe = dataInitializer.grapheVille;
+            this.statistiqueService = new StatistiqueService();
+            foreach (var chauffeur in dataInitializer.salaries)
+            {
+                if (chauffeur.Poste == "Chauffeur")
+                {
+                    this.chauffeurs.Add(chauffeur);
+                }
+            }
             InitializeComponents();
             ChargerStatistiques();
         }
@@ -40,7 +63,7 @@ namespace Transconnect.UI
         {
             // Configuration du formulaire
             this.Text = "TransConnect - Statistiques";
-            this.Size = new Size(1000, 700);
+            this.Size = new Size(1000, 720);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
@@ -69,6 +92,7 @@ namespace Transconnect.UI
                 Size = new Size(120, 20),
                 Value = DateTime.Now.AddMonths(-3)
             };
+            dtpDebut.Value = new DateTime(2024, 01, 1);
             pnlFiltres.Controls.Add(dtpDebut);
             
             Label lblA = new Label
@@ -229,27 +253,47 @@ namespace Transconnect.UI
 
         private void ChargerStatistiquesChauffeurs()
         {
-            // Placeholder - à remplacer par le code réel
+
             DataTable dtStatsChauffeurs = new DataTable();
             dtStatsChauffeurs.Columns.Add("Nom", typeof(string));
             dtStatsChauffeurs.Columns.Add("Prénom", typeof(string));
             dtStatsChauffeurs.Columns.Add("Nombre de livraisons", typeof(int));
             dtStatsChauffeurs.Columns.Add("Distance totale (km)", typeof(int));
-            dtStatsChauffeurs.Columns.Add("Durée totale (h)", typeof(double));
             dtStatsChauffeurs.Columns.Add("Revenus générés (€)", typeof(decimal));
-            dtStatsChauffeurs.Columns.Add("Note moyenne", typeof(double));
 
-            // Simuler quelques données
-            dtStatsChauffeurs.Rows.Add("Romu", "David", 42, 12500, 156.5, 36750.50m, 4.8);
-            dtStatsChauffeurs.Rows.Add("Romi", "Claire", 38, 10200, 133.0, 29580.25m, 4.9);
-            dtStatsChauffeurs.Rows.Add("Roma", "Nicolas", 45, 13800, 172.5, 41400.75m, 4.7);
+
+            foreach (var chauffeur in chauffeurs)
+            {
+                int nbLivraisons = 0;
+                List<Commande> commandesInterne = statistiqueService.CommandesParChauffeur(commandes, chauffeur);
+                foreach (var commande in commandesInterne)
+                {
+                    if (commande.Date >= dtpDebut.Value && commande.Date <= dtpFin.Value)
+                    {
+                        nbLivraisons++;
+                    }
+                }
+
+                decimal distanceTotale = 0;
+                foreach (var commande in commandes)
+                {
+                    if (commande.Chauffeur.NumeroSS == chauffeur.NumeroSS && commande.Date >= dtpDebut.Value && commande.Date <= dtpFin.Value)
+                    {
+                        // Calculer la distance totale
+                        distanceTotale += Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(commande.VilleDepart), graphe.TrouverNoeudVille(commande.VilleArrivee))));
+                    }
+                }
+
+                decimal revenusGeneres = commandes.Where(c => c.Chauffeur.NumeroSS == chauffeur.NumeroSS && c.Date >= dtpDebut.Value && c.Date <= dtpFin.Value).Sum(c => c.Prix);
+
+                dtStatsChauffeurs.Rows.Add(chauffeur.Nom, chauffeur.Prenom, nbLivraisons, distanceTotale, revenusGeneres);
+            }
 
             dgvStatsChauffeurs.DataSource = dtStatsChauffeurs;
         }
 
         private void ChargerStatistiquesCommandes()
         {
-            // Placeholder - à remplacer par le code réel
             DataTable dtStatsCommandes = new DataTable();
             dtStatsCommandes.Columns.Add("Période", typeof(string));
             dtStatsCommandes.Columns.Add("Nombre de commandes", typeof(int));
