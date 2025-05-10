@@ -24,7 +24,6 @@ namespace Transconnect.UI
 
         public void AfficherGraphe()
         {
-
             Form formulaire = new Form
             {
                 Text = "Visualisation du graphe des villes de France",
@@ -38,7 +37,8 @@ namespace Transconnect.UI
             // Calcul des positions des villes
             CalculerPositionsNoeuds();
 
-            Application.Run(formulaire);
+            // Utilisation de ShowDialog() au lieu de Application.Run()
+            formulaire.ShowDialog();
         }
 
 
@@ -59,7 +59,7 @@ namespace Transconnect.UI
                 {
                     paris = noeud;
                     _positionsNoeuds[paris.Id] = new PointF(centreX, centreY);
-                    Console.WriteLine($"Position de Paris (ID {paris.Id}) définie au centre: ({centreX}, {centreY})");
+
                     break;
                 }
             }
@@ -69,7 +69,6 @@ namespace Transconnect.UI
                 .Where(n => n != paris)
                 .ToList();
 
-            Console.WriteLine($"Nombre d'autres villes à positionner: {autresVilles.Count}");
             
             for (int i = 0; i < autresVilles.Count; i++)
             {
@@ -78,7 +77,6 @@ namespace Transconnect.UI
                 float y = centreY + (float)(rayonCercle * Math.Sin(angle));
                 
                 _positionsNoeuds[autresVilles[i].Id] = new PointF(x, y);
-                Console.WriteLine($"Position de {autresVilles[i]} (ID {autresVilles[i].Id}) définie à: ({x}, {y})");
             }
         }
 
@@ -220,11 +218,6 @@ namespace Transconnect.UI
                 using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
                 {
                     g.DrawString(nomVille, font, Brushes.Black, position, sf);
-                }
-                
-                if (estParis)
-                {
-                    Console.WriteLine($"Paris dessiné à la position: ({position.X}, {position.Y})");
                 }
             }
         }

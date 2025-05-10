@@ -25,7 +25,7 @@ namespace Transconnect.UI
         private DataInitializer dataInitializer;
         private ClientService clientService;
         private List<Client> clients;
-        private List<Commande> commandes; // A rajouter
+        private List<Commande> commandes; 
         private DataTable dtClients;
 
         public UIClient(DataInitializer dataInitializer)
@@ -33,6 +33,7 @@ namespace Transconnect.UI
             this.dataInitializer = dataInitializer;
             this.clientService = new ClientService();
             this.clients = dataInitializer.clients;
+            this.commandes = dataInitializer.commandes;
             
             InitializeComponents();
             ChargerClients();
@@ -253,6 +254,11 @@ namespace Transconnect.UI
 
 
             dgvCommandes.DataSource = dtCommandes;
+            foreach (var commande in commandes)
+            {
+                if (commande.Client.NumeroSS != clients[dgvClients.SelectedRows[0].Index].NumeroSS) continue;
+                dtCommandes.Rows.Add(commande.Id, commande.VilleDepart, commande.VilleArrivee, commande.Date, commande.Prix, commande.Statut);
+            }
             pnlCommandes.Controls.Add(dgvCommandes);
         }
 

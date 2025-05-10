@@ -6,6 +6,8 @@ using Transconnect.Data;
 using Transconnect.Models;
 using Transconnect.Models.Graphe;
 using Transconnect.Services;
+using Transconnect.Algorithms.CalculDistance;
+using Transconnect.Algorithms.PlusCourtChemin;
 
 namespace Transconnect.UI
 {
@@ -143,21 +145,11 @@ namespace Transconnect.UI
             };
             btnLivrer.Click += (s, e) => LivrerCommande();
             tabListeCommandes.Controls.Add(btnLivrer);
-
-            btnItineraire = new Button
-            {
-                Text = "Voir itinéraire",
-                Location = new Point(710, 520),
-                Size = new Size(120, 30),
-                BackColor = Color.Lavender
-            };
-            btnItineraire.Click += (s, e) => AfficherItineraire();
-            tabListeCommandes.Controls.Add(btnItineraire);
             
             btnSupprimer = new Button
             {
                 Text = "Supprimer",
-                Location = new Point(840, 520),
+                Location = new Point(710, 520),
                 Size = new Size(120, 30),
                 BackColor = Color.Salmon
             };
@@ -167,12 +159,12 @@ namespace Transconnect.UI
             btnFermer = new Button
             {
                 Text = "Fermer",
-                Location = new Point(870, 520),
+                Location = new Point(840, 520),
                 Size = new Size(120, 30),
                 BackColor = Color.LightGray
             };
             btnFermer.Click += (s, e) => this.Close();
-            this.Controls.Add(btnFermer);
+            tabListeCommandes.Controls.Add(btnFermer);
 
             // Tab Nouvelle commande
             tabNouvelleCommande = new TabPage
@@ -386,8 +378,13 @@ namespace Transconnect.UI
         private void AnnulerCommande()
         {
             Commande commandeAModifier = commandes[dgvCommandes.SelectedRows[0].Index];
-            if (commandeAModifier.Statut != StatutCommande.Annulee)
+            if (commandeAModifier.Statut != StatutCommande.Annulee && commandeAModifier.Statut != StatutCommande.Livree)
             {
+                if (commandeAModifier.Statut == StatutCommande.Payee)
+                {
+                    MessageBox.Show("La commande ne peut pas être annulée après avoir été payée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 commandeAModifier.ChangerStatut(StatutCommande.Annulee);
             }
             ChargerCommandes();
@@ -519,18 +516,6 @@ namespace Transconnect.UI
 
         }
 
-        private void AfficherItineraire()
-        {
-            // Placeholder pour afficher l'itinéraire d'une commande
-            if (dgvCommandes.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Veuillez sélectionner une commande pour voir son itinéraire", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            tabCommandes.SelectedTab = tabItineraire;
-        }
-
         private void CalculerItineraire()
         {
             // Placeholder pour calculer l'itinéraire d'une nouvelle commande
@@ -551,6 +536,7 @@ namespace Transconnect.UI
             // Simulation de calcul d'itinéraire
             string villeDepart = cmbVilleDepart.SelectedItem.ToString();
             string villeArrivee = cmbVilleArrivee.SelectedItem.ToString();
+            List<Noeud> itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
 
             Label lblItineraire = new Label
             {
@@ -560,9 +546,11 @@ namespace Transconnect.UI
                 Size = new Size(500, 20)
             };
             pnlItineraire.Controls.Add(lblItineraire);
+            Graphe graphe = dataInitializer.grapheVille;
 
-            // Distance simulée
-            int distance = new Random().Next(200, 800);
+
+            // Distance 
+            decimal distance =Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee)))) ;
 
             // Afficher l'itinéraire
             Label lblTrajet = new Label
@@ -598,40 +586,28 @@ namespace Transconnect.UI
             };
             pnlItineraire.Controls.Add(lblInfosPrix);
 
-            // Afficher un chemin simulé
             Label lblChemin = new Label
             {
-                Text = "Chemin: ",
+                Text = "Chemin : ",
                 Font = new Font("Arial", 10, FontStyle.Bold),
                 Location = new Point(10, 130),
                 Size = new Size(100, 20)
             };
             pnlItineraire.Controls.Add(lblChemin);
 
-            // Simuler un chemin
-            string[] villes = { "Paris", "Lyon", "Marseille", "Bordeaux", "Lille", "Strasbourg", "Nantes", "Toulouse", "Nice" };
+
             List<string> etapes = new List<string>();
-            etapes.Add(villeDepart);
 
-            // Ajouter des étapes aléatoires si la distance est grande
-            if (distance > 400)
+            foreach (var noeud in itineraire)
             {
-                int nbEtapes = new Random().Next(1, 3);
-                for (int i = 0; i < nbEtapes; i++)
-                {
-                    string etape = villes[new Random().Next(villes.Length)];
-                    if (etape != villeDepart && etape != villeArrivee && !etapes.Contains(etape))
-                        etapes.Add(etape);
-                }
+                etapes.Add(noeud.Entite.ToString());
             }
-
-            etapes.Add(villeArrivee);
 
             Label lblEtapes = new Label
             {
                 Text = string.Join(" → ", etapes),
                 Font = new Font("Arial", 10),
-                Location = new Point(80, 130),
+                Location = new Point(120, 130),
                 Size = new Size(500, 20)
             };
             pnlItineraire.Controls.Add(lblEtapes);

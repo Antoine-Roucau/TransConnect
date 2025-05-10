@@ -24,8 +24,6 @@ namespace Transconnect.Algorithms.CalculDistance
                     (l.Noeud1 == noeudA && l.Noeud2 == noeudB) ||
                     (l.Noeud1 == noeudB && l.Noeud2 == noeudA && (l.Oriente == null || l.Oriente == false)));
 
-                if (lien == null)
-                    throw new Exception($"Aucun lien trouvé entre {noeudA.Nom} et {noeudB.Nom}.");
 
                 distanceTotale += lien.Valeur ?? 1;
             }
