@@ -124,7 +124,7 @@ namespace Transconnect.UI
 
             btnPayer = new Button
             {
-                Text = "Marquer comme payée",
+                Text = "Marquer Payée",
                 Location = new Point(390, 520),
                 Size = new Size(150, 30),
                 BackColor = Color.LightYellow
@@ -169,7 +169,10 @@ namespace Transconnect.UI
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Width = 300
             };
-            cmbClient.Items.AddRange(new object[] { "Dupont Jean", "Martin Sophie", "Bernard Paul" });
+            foreach (Client client in dataInitializer.clients)
+            {
+                cmbClient.Items.Add($"{client.Nom} - {client.Prenom}");
+            }
             tableCommande.Controls.Add(cmbClient, 1, 0);
 
             // Ville de départ
@@ -179,7 +182,10 @@ namespace Transconnect.UI
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Width = 300
             };
-            cmbVilleDepart.Items.AddRange(new object[] { "Paris", "Lyon", "Marseille", "Bordeaux", "Lille", "Strasbourg", "Nantes", "Toulouse", "Nice" });
+            foreach (var ville in dataInitializer.villes)
+            {
+                cmbVilleDepart.Items.Add(ville);
+            }
             tableCommande.Controls.Add(cmbVilleDepart, 1, 1);
 
             // Ville d'arrivée
@@ -189,7 +195,10 @@ namespace Transconnect.UI
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Width = 300
             };
-            cmbVilleArrivee.Items.AddRange(new object[] { "Paris", "Lyon", "Marseille", "Bordeaux", "Lille", "Strasbourg", "Nantes", "Toulouse", "Nice" });
+            foreach (var ville in dataInitializer.villes)
+            {
+                cmbVilleArrivee.Items.Add(ville);
+            }
             tableCommande.Controls.Add(cmbVilleArrivee, 1, 2);
 
             // Date
@@ -209,7 +218,10 @@ namespace Transconnect.UI
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Width = 300
             };
-            cmbVehicule.Items.AddRange(new object[] { "Camion-citerne (Renault T520)", "Camion frigorifique (Mercedes Actros)", "Camionnette (Fiat Ducato)" });
+            foreach (Vehicule vehicule in dataInitializer.vehicules)
+            {
+                cmbVehicule.Items.Add($"{vehicule.Immatriculation} - {vehicule.Type}");
+            }
             tableCommande.Controls.Add(cmbVehicule, 1, 4);
 
             // Chauffeur
@@ -219,7 +231,13 @@ namespace Transconnect.UI
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Width = 300
             };
-            cmbChauffeur.Items.AddRange(new object[] { "Romu David", "Romi Claire", "Roma Nicolas" });
+            foreach (Salarie chauffeur in dataInitializer.salaries)
+            {
+                if (chauffeur.Poste == "Chauffeur")
+                {
+                    cmbChauffeur.Items.Add(chauffeur.Nom);
+                }
+            }
             tableCommande.Controls.Add(cmbChauffeur, 1, 5);
 
             // Prix estimé
@@ -333,7 +351,7 @@ namespace Transconnect.UI
             Commande commandeAModifier = commandes[dgvCommandes.SelectedRows[0].Index];
             UIModifCommande uiModifCommande = new UIModifCommande(dataInitializer,commandeAModifier);
             uiModifCommande.ShowDialog();
-            Commande commandeModifie = uiModifCommande.ModifierClient();
+            Commande commandeModifie = uiModifCommande.ModifierCommande();
             if (commandeModifie == null) return; // Si l'utilisateur a annulé la modification
             commandeService.ModifierCommande(commandeAModifier.Id,commandeModifie);
             ChargerCommandes();
@@ -342,27 +360,22 @@ namespace Transconnect.UI
 
         private void AnnulerCommande()
         {
-            // Placeholder pour annuler une commande
-            if (dgvCommandes.SelectedRows.Count == 0)
+            Commande commandeAModifier = commandes[dgvCommandes.SelectedRows[0].Index];
+            if (commandeAModifier.Statut != StatutCommande.Annulee)
             {
-                MessageBox.Show("Veuillez sélectionner une commande à annuler", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                commandeAModifier.ChangerStatut(StatutCommande.Annulee);
             }
-
-            DialogResult result = MessageBox.Show("Êtes-vous sûr de vouloir annuler cette commande?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                // Code d'annulation
-                MessageBox.Show("Commande annulée avec succès!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            ChargerCommandes();
         }
 
         private void PayerCommande()
         {
-            if(dgvCommandes.SelectedRows.Count != 0)
+            Commande commandeAModifier = commandes[dgvCommandes.SelectedRows[0].Index];
+            if (commandeAModifier.Statut != StatutCommande.Payee)
             {
-                //Appel CommandeSercice pour payer la commande
+                commandeAModifier.ChangerStatut(StatutCommande.Payee);
             }
+            ChargerCommandes();
         }
 
         private void AfficherItineraire()
@@ -500,22 +513,17 @@ namespace Transconnect.UI
 
         private void EnregistrerCommande()
         {
-            // Placeholder pour enregistrer une nouvelle commande
-            if (cmbClient.SelectedIndex == -1 || cmbVilleDepart.SelectedIndex == -1 || cmbVilleArrivee.SelectedIndex == -1 ||
-                cmbVehicule.SelectedIndex == -1 || cmbChauffeur.SelectedIndex == -1)
-            {
-                MessageBox.Show("Veuillez remplir tous les champs requis", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Vérifier que le prix a été calculé
-            if (lblPrix.Text == "- €")
-            {
-                MessageBox.Show("Veuillez calculer l'itinéraire pour obtenir le prix", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            MessageBox.Show("Commande enregistrée avec succès!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Commande commande = new Commande(
+                cmbVilleDepart.SelectedItem.ToString(),
+                cmbVilleArrivee.SelectedItem.ToString(),
+                dtpDate.Value,
+                decimal.Parse(lblPrix.Text.Replace("€", "").Trim())
+            );
+            commande.Client = dataInitializer.clients.Find(c => c.Nom == cmbClient.SelectedItem.ToString().Split('-')[0].Trim());
+            commande.Chauffeur = dataInitializer.salaries.Find(c => c.Nom == cmbChauffeur.SelectedItem.ToString());
+            commande.Vehicule = dataInitializer.vehicules.Find(v => v.Immatriculation == cmbVehicule.SelectedItem.ToString().Split('-')[0].Trim());
+            commande.Statut = StatutCommande.EnAttente;
+            commandeService.AjouterCommande(commande);
             
             // Réinitialiser le formulaire et revenir à la liste des commandes
             cmbClient.SelectedIndex = -1;
@@ -549,7 +557,7 @@ namespace Transconnect.UI
         private TextBox txtVilleArrivee;
         private TextBox txtDate;
         private TextBox txtPrix;
-        private TextBox txtStatut;
+        private ComboBox cmbStatut;
         private TextBox txtClient;
         private TextBox txtChauffeur;
         private TextBox txtVehicule;
@@ -603,10 +611,14 @@ namespace Transconnect.UI
             this.Controls.Add(txtPrix);
 
             Label StatutLabel = new Label { Text = "Statut:", Location = new Point(20, 220) };
-            txtStatut = new TextBox { Location = new Point(150, 220), Width = 200 };
+            cmbStatut = new ComboBox { Location = new Point(150, 220), Width = 200,DropDownStyle = ComboBoxStyle.DropDownList};
             this.Controls.Add(StatutLabel);
-            txtStatut.Text = commandeAModifier.Statut.ToString();
-            this.Controls.Add(txtStatut);
+            foreach (StatutCommande statut in Enum.GetValues(typeof(StatutCommande)))
+            {
+                cmbStatut.Items.Add(statut);
+            }
+            cmbStatut.SelectedItem = commandeAModifier.Statut;
+            this.Controls.Add(cmbStatut);
 
             Label ClientLabel = new Label { Text = "Client:", Location = new Point(20, 260) };
             txtClient = new TextBox { Location = new Point(150, 260), Width = 200 };
@@ -634,7 +646,7 @@ namespace Transconnect.UI
                 Size = new Size(120,30),
                 BackColor = Color.LightGreen
             };
-            btnModifierClient.Click += (s, e) => ModifierClient();
+            btnModifierClient.Click += (s, e) => ModifierCommande();
             this.Controls.Add(btnModifierClient);
             
             btnAnnuler = new Button
@@ -649,7 +661,7 @@ namespace Transconnect.UI
 
         }
 
-        public Commande ModifierClient()
+        public Commande ModifierCommande()
         {
             string Id = txtId.Text;
             string VilleDepart = txtVilleDepart.Text;
@@ -664,10 +676,10 @@ namespace Transconnect.UI
             {
                 Prix = decimal.Parse(txtPrix.Text);
             }
-            StatutCommande Statut = (StatutCommande)Enum.Parse(typeof(StatutCommande), txtStatut.Text);
+            StatutCommande Statut = (StatutCommande)Enum.Parse(typeof(StatutCommande), cmbStatut.Text);
             Client Client = dataInitializer.clients.Find(c => c.Nom == txtClient.Text);
-            Salarie Chauffeur = dataInitializer.salaries.Find(c => c.Nom == txtClient.Text);
-            Vehicule Vehicule = dataInitializer.vehicules.Find(c => c.Immatriculation == txtClient.Text);
+            Salarie Chauffeur = dataInitializer.salaries.Find(c => c.Nom == txtChauffeur.Text);
+            Vehicule Vehicule = dataInitializer.vehicules.Find(c => c.Immatriculation == txtVehicule.Text);
             Commande commande = new Commande(VilleDepart, VilleArrivee, Date, Prix);
             commande.Id = int.Parse(Id);
             commande.Statut = Statut;
