@@ -5,11 +5,13 @@ using System.Windows.Forms;
 using Transconnect.Data;
 using Transconnect.Models;
 using Transconnect.Models.Graphe;
+using Transconnect.Services;
 
 namespace Transconnect.UI
 {
     public class UICommande : Form
     {
+        #region Propriétés
         private TabControl tabCommandes;
         private TabPage tabListeCommandes;
         private TabPage tabNouvelleCommande;
@@ -35,12 +37,16 @@ namespace Transconnect.UI
         private Panel pnlItineraire;
         
         private DataInitializer dataInitializer;
+        private CommandeService commandeService;
         private List<Commande> commandes = new List<Commande>();
-
+        #endregion
+        
+        #region Constructeur
         public UICommande(DataInitializer dataInitializer)
         {
             this.dataInitializer = dataInitializer;
             this.commandes = dataInitializer.commandes;
+            this.commandeService = new CommandeService(this.commandes);
             InitializeComponents();
             ChargerCommandes();
         }
@@ -297,7 +303,9 @@ namespace Transconnect.UI
             btnFermer.Click += (s, e) => this.Close();
             this.Controls.Add(btnFermer);
         }
+        #endregion
 
+        #region Méthodes
         private void ChargerCommandes()
         {
             // Placeholder - à remplacer par le code réel
@@ -311,24 +319,25 @@ namespace Transconnect.UI
             dtCommandes.Columns.Add("Statut", typeof(string));
             dtCommandes.Columns.Add("Chauffeur", typeof(string));
             dtCommandes.Columns.Add("Véhicule", typeof(string));
-
+            dtCommandes.Columns.Add("Vehicule Type", typeof(string));
+            commandes = commandeService.GetCommandes();
             foreach (var commande in commandes)
             {
-                dtCommandes.Rows.Add(commande.Id, commande.Client.Nom, commande.Date, commande.VilleDepart,commande.VilleArrivee,commande.Prix, commande.Statut.ToString(),commande.Chauffeur.Nom,commande.Vehicule.Type.ToString());
+                dtCommandes.Rows.Add(commande.Id, commande.Client.Nom ?? "None", commande.Date, commande.VilleDepart,commande.VilleArrivee,commande.Prix, commande.Statut.ToString(),commande.Chauffeur.Nom ?? "None",commande.Vehicule.Immatriculation.ToString(),commande.Vehicule.Type.ToString());
             }
             dgvCommandes.DataSource = dtCommandes;
         }
 
         private void ModifierCommande()
         {
-            // Placeholder pour modifier une commande
-            if (dgvCommandes.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Veuillez sélectionner une commande à modifier", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            Commande commandeAModifier = commandes[dgvCommandes.SelectedRows[0].Index];
+            UIModifCommande uiModifCommande = new UIModifCommande(dataInitializer,commandeAModifier);
+            uiModifCommande.ShowDialog();
+            Commande commandeModifie = uiModifCommande.ModifierClient();
+            if (commandeModifie == null) return; // Si l'utilisateur a annulé la modification
+            commandeService.ModifierCommande(commandeAModifier.Id,commandeModifie);
+            ChargerCommandes();
 
-            MessageBox.Show("Fonctionnalité à implémenter: Modifier une commande", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void AnnulerCommande()
@@ -530,5 +539,145 @@ namespace Transconnect.UI
                 MessageBox.Show($"Erreur lors de l'affichage de la carte: {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        #endregion
+    }
+
+    public class UIModifCommande : Form 
+    {
+        private TextBox txtId;
+        private TextBox txtVilleDepart;
+        private TextBox txtVilleArrivee;
+        private TextBox txtDate;
+        private TextBox txtPrix;
+        private TextBox txtStatut;
+        private TextBox txtClient;
+        private TextBox txtChauffeur;
+        private TextBox txtVehicule;
+        private Button btnModifierClient;
+        private Button btnAnnuler;
+        private DataInitializer dataInitializer;
+
+        public UIModifCommande(DataInitializer dataInitializer, Commande commandeAModifier)
+        {
+            this.dataInitializer = dataInitializer;
+            InitializeComponents(commandeAModifier);
+        }
+
+        private void InitializeComponents(Commande commandeAModifier)
+        {
+        
+            // Configuration du formulaire
+            this.Text = "Modifier une Commande";
+            this.Size = new Size(400, 500);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.White;
+
+            Label IdLabel = new Label { Text = "ID:", Location = new Point(20, 20) };
+            txtId = new TextBox { Location = new Point(150, 20), Width = 200 };
+            this.Controls.Add(IdLabel);
+            txtId.Text = commandeAModifier.Id.ToString();
+            this.Controls.Add(txtId);
+
+            Label VilleDepartLabel = new Label { Text = "Ville de départ:", Location = new Point(20, 60) };
+            txtVilleDepart = new TextBox { Location = new Point(150, 60), Width = 200 };
+            this.Controls.Add(VilleDepartLabel);
+            txtVilleDepart.Text = commandeAModifier.VilleDepart;
+            this.Controls.Add(txtVilleDepart);
+
+            Label VilleArriveeLabel = new Label { Text = "Ville d'arrivée:", Location = new Point(20, 100) };
+            txtVilleArrivee = new TextBox { Location = new Point(150, 100), Width = 200 };
+            this.Controls.Add(VilleArriveeLabel);
+            txtVilleArrivee.Text = commandeAModifier.VilleArrivee;
+            this.Controls.Add(txtVilleArrivee);
+
+            Label DateLabel = new Label { Text = "Date:", Location = new Point(20, 140) };
+            txtDate = new TextBox { Location = new Point(150, 140), Width = 200 };
+            this.Controls.Add(DateLabel);
+            txtDate.Text = commandeAModifier.Date.ToString("yyyy-MM-dd");
+            this.Controls.Add(txtDate);
+            
+            Label PrixLabel = new Label { Text = "Prix:", Location = new Point(20, 180) };
+            txtPrix = new TextBox { Location = new Point(150, 180), Width = 200 };
+            this.Controls.Add(PrixLabel);
+            txtPrix.Text = commandeAModifier.Prix.ToString();
+            this.Controls.Add(txtPrix);
+
+            Label StatutLabel = new Label { Text = "Statut:", Location = new Point(20, 220) };
+            txtStatut = new TextBox { Location = new Point(150, 220), Width = 200 };
+            this.Controls.Add(StatutLabel);
+            txtStatut.Text = commandeAModifier.Statut.ToString();
+            this.Controls.Add(txtStatut);
+
+            Label ClientLabel = new Label { Text = "Client:", Location = new Point(20, 260) };
+            txtClient = new TextBox { Location = new Point(150, 260), Width = 200 };
+            this.Controls.Add(ClientLabel);
+            txtClient.Text = commandeAModifier.Client.Nom.ToString();
+            this.Controls.Add(txtClient);
+
+            Label ChauffeurLabel = new Label { Text = "Chauffeur:", Location = new Point(20, 300) };
+            txtChauffeur = new TextBox { Location = new Point(150, 300), Width = 200 };
+            this.Controls.Add(ChauffeurLabel);
+            txtChauffeur.Text = commandeAModifier.Chauffeur.Nom.ToString();
+            this.Controls.Add(txtChauffeur);
+
+            Label VehiculeLabel = new Label { Text = "Véhicule:", Location = new Point(20, 340) };
+            txtVehicule = new TextBox { Location = new Point(150, 340), Width = 200 };
+            this.Controls.Add(VehiculeLabel);
+            txtVehicule.Text = commandeAModifier.Vehicule.Immatriculation.ToString();
+            this.Controls.Add(txtVehicule);
+
+            // Boutons
+            btnModifierClient = new Button
+            {
+                Text = "Modifier Commande",
+                Location = new Point(80, 400),
+                Size = new Size(120,30),
+                BackColor = Color.LightGreen
+            };
+            btnModifierClient.Click += (s, e) => ModifierClient();
+            this.Controls.Add(btnModifierClient);
+            
+            btnAnnuler = new Button
+            {
+                Text = "Annuler",
+                Location = new Point(220, 400),
+                Size = new Size(120,30),
+                BackColor = Color.LightCoral
+            };
+            btnAnnuler.Click += (s, e) => this.Close();
+            this.Controls.Add(btnAnnuler);
+
+        }
+
+        public Commande ModifierClient()
+        {
+            string Id = txtId.Text;
+            string VilleDepart = txtVilleDepart.Text;
+            string VilleArrivee = txtVilleArrivee.Text;
+            DateTime Date = DateTime.Now;
+            if (txtDate.Text !="")
+            { 
+                Date = DateTime.Parse(txtDate.Text);
+            }
+            decimal Prix = 0;
+            if (txtPrix.Text != "")
+            {
+                Prix = decimal.Parse(txtPrix.Text);
+            }
+            StatutCommande Statut = (StatutCommande)Enum.Parse(typeof(StatutCommande), txtStatut.Text);
+            Client Client = dataInitializer.clients.Find(c => c.Nom == txtClient.Text);
+            Salarie Chauffeur = dataInitializer.salaries.Find(c => c.Nom == txtClient.Text);
+            Vehicule Vehicule = dataInitializer.vehicules.Find(c => c.Immatriculation == txtClient.Text);
+            Commande commande = new Commande(VilleDepart, VilleArrivee, Date, Prix);
+            commande.Id = int.Parse(Id);
+            commande.Statut = Statut;
+            commande.Client = Client;
+            commande.Chauffeur = Chauffeur;
+            commande.Vehicule = Vehicule;
+
+            this.Close();
+            return commande;
+        }
     }
 }
+

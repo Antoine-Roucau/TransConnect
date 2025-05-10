@@ -12,6 +12,10 @@ namespace Transconnect.Services
         {
             _commandes = new List<Commande>();
         }
+        public CommandeService(List<Commande> commandes)
+        {
+            _commandes = commandes;
+        }
 
         public void AjouterCommande(Commande commande)
         {

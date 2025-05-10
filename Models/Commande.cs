@@ -56,6 +56,7 @@ namespace Transconnect.Models
         public int Id 
         {
             get { return id; }
+            set { id = value; }
         }
         public static int NextId 
         {
