@@ -119,9 +119,6 @@ namespace Transconnect.Models
             if (statut == StatutCommande.Annulee)
                 throw new InvalidOperationException("Impossible de modifier une commande annulée");
             
-            if (statut == StatutCommande.Payee && nouveauStatut != StatutCommande.Payee)
-                throw new InvalidOperationException("Impossible de modifier une commande déjà payée");
-            
             statut = nouveauStatut;
         }
         #endregion

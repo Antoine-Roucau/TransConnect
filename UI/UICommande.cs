@@ -16,15 +16,17 @@ namespace Transconnect.UI
         private TabPage tabListeCommandes;
         private TabPage tabNouvelleCommande;
         private TabPage tabItineraire;
-        
+
         private DataGridView dgvCommandes;
         private Button btnAjouter;
         private Button btnModifier;
         private Button btnAnnuler;
+        private Button btnSupprimer;
         private Button btnPayer;
+        private Button btnLivrer;
         private Button btnItineraire;
         private Button btnFermer;
-        
+
         private ComboBox cmbClient;
         private ComboBox cmbVilleDepart;
         private ComboBox cmbVilleArrivee;
@@ -35,12 +37,12 @@ namespace Transconnect.UI
         private Button btnEnregistrer;
         private Label lblPrix;
         private Panel pnlItineraire;
-        
+
         private DataInitializer dataInitializer;
         private CommandeService commandeService;
         private List<Commande> commandes = new List<Commande>();
         #endregion
-        
+
         #region Constructeur
         public UICommande(DataInitializer dataInitializer)
         {
@@ -132,15 +134,45 @@ namespace Transconnect.UI
             btnPayer.Click += (s, e) => PayerCommande();
             tabListeCommandes.Controls.Add(btnPayer);
 
+            btnLivrer = new Button
+            {
+                Text = "Marquer Livrée",
+                Location = new Point(550, 520),
+                Size = new Size(150, 30),
+                BackColor = Color.LightYellow
+            };
+            btnLivrer.Click += (s, e) => LivrerCommande();
+            tabListeCommandes.Controls.Add(btnLivrer);
+
             btnItineraire = new Button
             {
                 Text = "Voir itinéraire",
-                Location = new Point(550, 520),
+                Location = new Point(710, 520),
                 Size = new Size(120, 30),
                 BackColor = Color.Lavender
             };
             btnItineraire.Click += (s, e) => AfficherItineraire();
             tabListeCommandes.Controls.Add(btnItineraire);
+            
+            btnSupprimer = new Button
+            {
+                Text = "Supprimer",
+                Location = new Point(840, 520),
+                Size = new Size(120, 30),
+                BackColor = Color.Salmon
+            };
+            btnSupprimer.Click += (s, e) => SupprimerCommande();
+            tabListeCommandes.Controls.Add(btnSupprimer);
+
+            btnFermer = new Button
+            {
+                Text = "Fermer",
+                Location = new Point(870, 520),
+                Size = new Size(120, 30),
+                BackColor = Color.LightGray
+            };
+            btnFermer.Click += (s, e) => this.Close();
+            this.Controls.Add(btnFermer);
 
             // Tab Nouvelle commande
             tabNouvelleCommande = new TabPage
@@ -220,7 +252,10 @@ namespace Transconnect.UI
             };
             foreach (Vehicule vehicule in dataInitializer.vehicules)
             {
-                cmbVehicule.Items.Add($"{vehicule.Immatriculation} - {vehicule.Type}");
+                if (vehicule.EstDisponible)
+                {
+                    cmbVehicule.Items.Add($"{vehicule.Immatriculation} / {vehicule.Type}");
+                }
             }
             tableCommande.Controls.Add(cmbVehicule, 1, 4);
 
@@ -310,23 +345,13 @@ namespace Transconnect.UI
             btnAfficherCarte.Click += (s, e) => AfficherCarteVilles();
             tabItineraire.Controls.Add(btnAfficherCarte);
 
-            // Bouton pour fermer
-            btnFermer = new Button
-            {
-                Text = "Fermer",
-                Location = new Point(880, 630),
-                Size = new Size(100, 30),
-                BackColor = Color.LightGray
-            };
-            btnFermer.Click += (s, e) => this.Close();
-            this.Controls.Add(btnFermer);
+
         }
         #endregion
 
         #region Méthodes
         private void ChargerCommandes()
         {
-            // Placeholder - à remplacer par le code réel
             DataTable dtCommandes = new DataTable();
             dtCommandes.Columns.Add("ID", typeof(int));
             dtCommandes.Columns.Add("Client", typeof(string));
@@ -341,7 +366,7 @@ namespace Transconnect.UI
             commandes = commandeService.GetCommandes();
             foreach (var commande in commandes)
             {
-                dtCommandes.Rows.Add(commande.Id, commande.Client.Nom ?? "None", commande.Date, commande.VilleDepart,commande.VilleArrivee,commande.Prix, commande.Statut.ToString(),commande.Chauffeur.Nom ?? "None",commande.Vehicule.Immatriculation.ToString(),commande.Vehicule.Type.ToString());
+                dtCommandes.Rows.Add(commande.Id, commande.Client.Nom ?? "None", commande.Date, commande.VilleDepart, commande.VilleArrivee, commande.Prix, commande.Statut.ToString(), commande.Chauffeur.Nom ?? "None", commande.Vehicule.Immatriculation.ToString(), commande.Vehicule.Type.ToString());
             }
             dgvCommandes.DataSource = dtCommandes;
         }
@@ -349,11 +374,11 @@ namespace Transconnect.UI
         private void ModifierCommande()
         {
             Commande commandeAModifier = commandes[dgvCommandes.SelectedRows[0].Index];
-            UIModifCommande uiModifCommande = new UIModifCommande(dataInitializer,commandeAModifier);
+            UIModifCommande uiModifCommande = new UIModifCommande(dataInitializer, commandeAModifier);
             uiModifCommande.ShowDialog();
             Commande commandeModifie = uiModifCommande.ModifierCommande();
             if (commandeModifie == null) return; // Si l'utilisateur a annulé la modification
-            commandeService.ModifierCommande(commandeAModifier.Id,commandeModifie);
+            commandeService.ModifierCommande(commandeAModifier.Id, commandeModifie);
             ChargerCommandes();
 
         }
@@ -376,6 +401,122 @@ namespace Transconnect.UI
                 commandeAModifier.ChangerStatut(StatutCommande.Payee);
             }
             ChargerCommandes();
+        }
+
+        private void LivrerCommande()
+        {
+            Commande commandeAModifier = commandes[dgvCommandes.SelectedRows[0].Index];
+            if (commandeAModifier.Statut == StatutCommande.Payee)
+            {
+                commandeAModifier.ChangerStatut(StatutCommande.Livree);
+            }
+            else
+            {
+                MessageBox.Show("La commande doit être payée avant d'être livrée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            ChargerCommandes();
+        }
+
+        private void SupprimerCommande()
+        {
+            int index = dgvCommandes.SelectedRows[0].Index;
+            Commande commandeASupprimer = commandes[index];
+            commandeService.SupprimerCommande(commandeASupprimer.Id);
+            ChargerCommandes();
+        }
+        
+        private void EnregistrerCommande()
+        {
+
+            // Vérifier que tous les champs requis sont remplis
+            if (cmbClient.SelectedIndex == -1 || cmbVilleDepart.SelectedIndex == -1 || cmbVilleArrivee.SelectedIndex == -1 ||
+                cmbVehicule.SelectedIndex == -1 || cmbChauffeur.SelectedIndex == -1)
+            {
+                MessageBox.Show("Veuillez remplir tous les champs requis", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Vérifier que le prix a été calculé
+            if (lblPrix.Text == "- €")
+            {
+                MessageBox.Show("Veuillez calculer l'itinéraire pour obtenir le prix", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Vérifier si le chauffeur est déjà affecté à une commande à la même date
+            string chauffeurNom = cmbChauffeur.SelectedItem.ToString();
+            DateTime date = dtpDate.Value;
+            foreach (var commande in commandes)
+            {
+                if (commande.Chauffeur.Nom == chauffeurNom && commande.Date.Date == date.Date)
+                {
+                    string message = $"Le chauffeur {chauffeurNom} est déjà affecté à une commande à cette date.";
+                    message += "\nVoici les chauffeurs restants : ";
+                    foreach (var s in dataInitializer.salaries)
+                    {
+                        if (s.Nom != chauffeurNom && s.Poste == "Chauffeur")
+                        {
+                            message += $"\n- {s.Nom}";
+                        }
+                    }
+                    MessageBox.Show(message, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            //Verifier si le véhicule est déjà affecté à une commande à la même date
+            string vehiculeInfo = cmbVehicule.SelectedItem.ToString().Split('/')[0].Trim();
+            foreach (var commande in commandes)
+            {
+                if (commande.Vehicule.Immatriculation == vehiculeInfo && commande.Date.Date == date.Date)
+                {
+                    string message = $"Le véhicule {vehiculeInfo} est déjà affecté à une commande à cette date.";
+                    message += "\nVoici les véhicules restants : ";
+                    foreach (var v in dataInitializer.vehicules)
+                    {
+                        if (v.Immatriculation != vehiculeInfo && v.EstDisponible)
+                        {
+                            message += $"\n- {v.Immatriculation} / {v.Type}";
+                        }
+                    }
+                    MessageBox.Show(message, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+
+            string clientNom = cmbClient.SelectedItem.ToString();
+            string villeDepart = cmbVilleDepart.SelectedItem.ToString();
+            string villeArrivee = cmbVilleArrivee.SelectedItem.ToString();
+            string prixText = lblPrix.Text.Replace("€", "");
+            decimal prix = decimal.Parse(prixText);
+
+            Client client = dataInitializer.clients.Find(c => $"{c.Nom} - {c.Prenom}" == clientNom);
+            Vehicule vehicule = dataInitializer.vehicules.Find(v => v.Immatriculation == vehiculeInfo);
+            Salarie chauffeur = dataInitializer.salaries.Find(s => s.Nom == chauffeurNom);
+
+
+            Commande nouvelleCommande = new Commande(villeDepart, villeArrivee, date, prix);
+            nouvelleCommande.Client = client;
+            nouvelleCommande.Chauffeur = chauffeur;
+            nouvelleCommande.Vehicule = vehicule;
+            nouvelleCommande.Statut = StatutCommande.EnAttente;
+
+            commandeService.AjouterCommande(nouvelleCommande);
+            client.AddCommande(nouvelleCommande);
+
+
+            cmbClient.SelectedIndex = -1;
+            cmbVilleDepart.SelectedIndex = -1;
+            cmbVilleArrivee.SelectedIndex = -1;
+            cmbVehicule.SelectedIndex = -1;
+            cmbChauffeur.SelectedIndex = -1;
+            lblPrix.Text = "- €";
+            pnlItineraire.Controls.Clear();
+
+            tabCommandes.SelectedTab = tabListeCommandes;
+            ChargerCommandes();
+
         }
 
         private void AfficherItineraire()
@@ -410,7 +551,7 @@ namespace Transconnect.UI
             // Simulation de calcul d'itinéraire
             string villeDepart = cmbVilleDepart.SelectedItem.ToString();
             string villeArrivee = cmbVilleArrivee.SelectedItem.ToString();
-            
+
             Label lblItineraire = new Label
             {
                 Text = "Itinéraire calculé avec l'algorithme de Dijkstra",
@@ -422,7 +563,7 @@ namespace Transconnect.UI
 
             // Distance simulée
             int distance = new Random().Next(200, 800);
-            
+
             // Afficher l'itinéraire
             Label lblTrajet = new Label
             {
@@ -432,7 +573,7 @@ namespace Transconnect.UI
                 Size = new Size(500, 20)
             };
             pnlItineraire.Controls.Add(lblTrajet);
-            
+
             Label lblDistance = new Label
             {
                 Text = $"Distance: {distance} km",
@@ -441,28 +582,13 @@ namespace Transconnect.UI
                 Size = new Size(200, 20)
             };
             pnlItineraire.Controls.Add(lblDistance);
-            
-            // Simuler un prix basé sur la distance et le type de véhicule
-            decimal prixKm = 0;
-            if (cmbVehicule.SelectedIndex != -1)
-            {
-                if (cmbVehicule.SelectedItem.ToString().Contains("Camion-citerne"))
-                    prixKm = 2.95m;
-                else if (cmbVehicule.SelectedItem.ToString().Contains("Camion frigorifique"))
-                    prixKm = 3.25m;
-                else if (cmbVehicule.SelectedItem.ToString().Contains("Camionnette"))
-                    prixKm = 1.95m;
-                else
-                    prixKm = 2.5m;
-            }
-            else
-            {
-                prixKm = 2.5m;
-            }
-            
+
+
+            decimal prixKm = dataInitializer.vehicules[cmbVehicule.SelectedIndex].TarifKilometrique;
+        
             decimal prix = distance * prixKm;
             lblPrix.Text = $"{prix:C}";
-            
+
             Label lblInfosPrix = new Label
             {
                 Text = $"Tarif kilométrique: {prixKm:C}/km",
@@ -471,7 +597,7 @@ namespace Transconnect.UI
                 Size = new Size(200, 20)
             };
             pnlItineraire.Controls.Add(lblInfosPrix);
-            
+
             // Afficher un chemin simulé
             Label lblChemin = new Label
             {
@@ -481,12 +607,12 @@ namespace Transconnect.UI
                 Size = new Size(100, 20)
             };
             pnlItineraire.Controls.Add(lblChemin);
-            
+
             // Simuler un chemin
             string[] villes = { "Paris", "Lyon", "Marseille", "Bordeaux", "Lille", "Strasbourg", "Nantes", "Toulouse", "Nice" };
             List<string> etapes = new List<string>();
             etapes.Add(villeDepart);
-            
+
             // Ajouter des étapes aléatoires si la distance est grande
             if (distance > 400)
             {
@@ -498,9 +624,9 @@ namespace Transconnect.UI
                         etapes.Add(etape);
                 }
             }
-            
+
             etapes.Add(villeArrivee);
-            
+
             Label lblEtapes = new Label
             {
                 Text = string.Join(" → ", etapes),
@@ -511,46 +637,21 @@ namespace Transconnect.UI
             pnlItineraire.Controls.Add(lblEtapes);
         }
 
-        private void EnregistrerCommande()
-        {
-            Commande commande = new Commande(
-                cmbVilleDepart.SelectedItem.ToString(),
-                cmbVilleArrivee.SelectedItem.ToString(),
-                dtpDate.Value,
-                decimal.Parse(lblPrix.Text.Replace("€", "").Trim())
-            );
-            commande.Client = dataInitializer.clients.Find(c => c.Nom == cmbClient.SelectedItem.ToString().Split('-')[0].Trim());
-            commande.Chauffeur = dataInitializer.salaries.Find(c => c.Nom == cmbChauffeur.SelectedItem.ToString());
-            commande.Vehicule = dataInitializer.vehicules.Find(v => v.Immatriculation == cmbVehicule.SelectedItem.ToString().Split('-')[0].Trim());
-            commande.Statut = StatutCommande.EnAttente;
-            commandeService.AjouterCommande(commande);
-            
-            // Réinitialiser le formulaire et revenir à la liste des commandes
-            cmbClient.SelectedIndex = -1;
-            cmbVilleDepart.SelectedIndex = -1;
-            cmbVilleArrivee.SelectedIndex = -1;
-            cmbVehicule.SelectedIndex = -1;
-            cmbChauffeur.SelectedIndex = -1;
-            lblPrix.Text = "- €";
-            pnlItineraire.Controls.Clear();
-            
-            tabCommandes.SelectedTab = tabListeCommandes;
-            ChargerCommandes(); // Recharger les commandes pour voir la nouvelle
-        }
-
         private void AfficherCarteVilles()
         {
-            try {
+            try
+            {
                 dataInitializer.AfficherGrapheVilleGraphique();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show($"Erreur lors de l'affichage de la carte: {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         #endregion
     }
 
-    public class UIModifCommande : Form 
+    public class UIModifCommande : Form
     {
         private TextBox txtId;
         private TextBox txtVilleDepart;
@@ -573,7 +674,7 @@ namespace Transconnect.UI
 
         private void InitializeComponents(Commande commandeAModifier)
         {
-        
+
             // Configuration du formulaire
             this.Text = "Modifier une Commande";
             this.Size = new Size(400, 500);
@@ -603,7 +704,7 @@ namespace Transconnect.UI
             this.Controls.Add(DateLabel);
             txtDate.Text = commandeAModifier.Date.ToString("yyyy-MM-dd");
             this.Controls.Add(txtDate);
-            
+
             Label PrixLabel = new Label { Text = "Prix:", Location = new Point(20, 180) };
             txtPrix = new TextBox { Location = new Point(150, 180), Width = 200 };
             this.Controls.Add(PrixLabel);
@@ -611,7 +712,7 @@ namespace Transconnect.UI
             this.Controls.Add(txtPrix);
 
             Label StatutLabel = new Label { Text = "Statut:", Location = new Point(20, 220) };
-            cmbStatut = new ComboBox { Location = new Point(150, 220), Width = 200,DropDownStyle = ComboBoxStyle.DropDownList};
+            cmbStatut = new ComboBox { Location = new Point(150, 220), Width = 200, DropDownStyle = ComboBoxStyle.DropDownList };
             this.Controls.Add(StatutLabel);
             foreach (StatutCommande statut in Enum.GetValues(typeof(StatutCommande)))
             {
@@ -643,17 +744,17 @@ namespace Transconnect.UI
             {
                 Text = "Modifier Commande",
                 Location = new Point(80, 400),
-                Size = new Size(120,30),
+                Size = new Size(120, 30),
                 BackColor = Color.LightGreen
             };
             btnModifierClient.Click += (s, e) => ModifierCommande();
             this.Controls.Add(btnModifierClient);
-            
+
             btnAnnuler = new Button
             {
                 Text = "Annuler",
                 Location = new Point(220, 400),
-                Size = new Size(120,30),
+                Size = new Size(120, 30),
                 BackColor = Color.LightCoral
             };
             btnAnnuler.Click += (s, e) => this.Close();
@@ -667,8 +768,8 @@ namespace Transconnect.UI
             string VilleDepart = txtVilleDepart.Text;
             string VilleArrivee = txtVilleArrivee.Text;
             DateTime Date = DateTime.Now;
-            if (txtDate.Text !="")
-            { 
+            if (txtDate.Text != "")
+            {
                 Date = DateTime.Parse(txtDate.Text);
             }
             decimal Prix = 0;
