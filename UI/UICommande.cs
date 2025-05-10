@@ -159,12 +159,12 @@ namespace Transconnect.UI
             btnFermer = new Button
             {
                 Text = "Fermer",
-                Location = new Point(840, 520),
+                Location = new Point(1350, 625),
                 Size = new Size(120, 30),
                 BackColor = Color.LightGray
             };
             btnFermer.Click += (s, e) => this.Close();
-            tabListeCommandes.Controls.Add(btnFermer);
+            this.Controls.Add(btnFermer);
 
             // Tab Nouvelle commande
             tabNouvelleCommande = new TabPage

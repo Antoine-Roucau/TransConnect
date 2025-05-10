@@ -95,7 +95,9 @@ namespace Transconnect.UI
             };
             
             formulaire.Controls.Add(panel);
-            Application.Run(formulaire);
+            
+            // Utilisation de ShowDialog() au lieu de Application.Run()
+            formulaire.ShowDialog();
         }
 
         private void CalculerPositionsNoeuds()

@@ -2,16 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gra = Transconnect.Models.Graphe;
+using System.Diagnostics;
 
 namespace Transconnect.Algorithms.PlusCourtChemin
 {
     public class Dijkstra
     {
+        public static TimeSpan TempsExecution { get; private set; }
+        public static long UtilisationMemoire { get; private set; }
         public static List<Gra.Noeud> TrouverCheminLePlusCourt(Gra.Graphe graphe, Gra.Noeud source, Gra.Noeud destination)
         {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            long memoireAvant = GC.GetTotalMemory(true);
+
+
+            Stopwatch chrono = Stopwatch.StartNew();
+
             // Dictionnaires pour stocker les distances et les prédecesseurs
             Dictionary<Gra.Noeud, double> distances = new Dictionary<Gra.Noeud, double>();
             Dictionary<Gra.Noeud, Gra.Noeud> predecesseurs = new Dictionary<Gra.Noeud, Gra.Noeud>();
+            
             
             // Initialiser toutes les distances à l'infini et les prédecesseurs à null
             foreach (var noeud in graphe.Noeuds)
@@ -64,6 +77,10 @@ namespace Transconnect.Algorithms.PlusCourtChemin
                         }
                     }
                 }
+                chrono.Stop();
+                TempsExecution = chrono.Elapsed;
+                long memoireApres = GC.GetTotalMemory(false);
+                UtilisationMemoire = memoireApres - memoireAvant;
             }
 
             // Si la destination n'a pas été atteinte

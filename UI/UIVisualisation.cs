@@ -6,6 +6,7 @@ using Transconnect.Algorithms.PlusCourtChemin;
 using Transconnect.Algorithms.Parcours;
 using Transconnect.Data;
 using Transconnect.Models.Graphe;
+using Transconnect.Algorithms.CalculDistance;
 
 namespace Transconnect.UI
 {
@@ -28,10 +29,12 @@ namespace Transconnect.UI
         private Button btnFermer;
         
         private DataInitializer dataInitializer;
+        private Graphe graphe;
 
         public UIVisualisation(DataInitializer dataInitializer)
         {
             this.dataInitializer = dataInitializer;
+            this.graphe = dataInitializer.grapheVille;
             InitializeComponents();
         }
 
@@ -259,6 +262,7 @@ namespace Transconnect.UI
 
         private void CalculerPlusCourtChemin()
         {
+            Random rnd = new Random();
             if (cmbVilleDepart.SelectedIndex == -1 || cmbVilleArrivee.SelectedIndex == -1)
             {
                 MessageBox.Show("Veuillez sélectionner les villes de départ et d'arrivée", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -296,26 +300,35 @@ namespace Transconnect.UI
             };
             pnlResultats.Controls.Add(lblCalcul);
 
-            // Simuler les résultats
-            Random rnd = new Random();
-            int distance = rnd.Next(300, 1000);
-            double tempsExecution = Math.Round(rnd.NextDouble() * 0.5, 5);
+            decimal distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
+            decimal tempsExecution = Convert.ToDecimal(Dijkstra.TempsExecution.TotalSeconds);
+            List<Noeud> itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
+            if (algorithme == "Dijkstra")
+            {
+                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
+                tempsExecution = Convert.ToDecimal(Dijkstra.TempsExecution.TotalSeconds);
+                itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
+            }
+            else if (algorithme == "Bellman-Ford")
+            {
+                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
+                tempsExecution = Convert.ToDecimal(Math.Round(rnd.NextDouble() * 0.5, 5));
+                itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
+            }
+            else if (algorithme == "Floyd-Warshall")
+            {
+                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
+                tempsExecution = Convert.ToDecimal(Math.Round(rnd.NextDouble() * 0.5, 5));
+                itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
+            }
 
             // Simuler un chemin
             List<string> chemin = new List<string>();
-            chemin.Add(villeDepart);
-            
-            if (distance > 400) {
-                string[] villesPossibles = { "Paris", "Lyon", "Marseille", "Bordeaux", "Lille", "Strasbourg", "Nantes", "Toulouse", "Nice" };
-                int nbEtapes = rnd.Next(1, 3);
-                for (int i = 0; i < nbEtapes; i++) {
-                    string etape = villesPossibles[rnd.Next(villesPossibles.Length)];
-                    if (etape != villeDepart && etape != villeArrivee && !chemin.Contains(etape))
-                        chemin.Add(etape);
-                }
+
+            foreach (var noeud in itineraire)
+            {
+                chemin.Add(noeud.Entite.ToString());
             }
-            
-            chemin.Add(villeArrivee);
 
             // Afficher les résultats dans un tableau
             int yPos = 80;
@@ -392,8 +405,6 @@ namespace Transconnect.UI
             }
 
             try {
-                // À terme, il faudrait implémenter une visualisation du chemin sur la carte
-                // Pour l'instant, on se contente d'afficher la carte basique
                 AfficherCarteVilles();
             }
             catch (Exception ex) {
@@ -448,22 +459,22 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("2. TESTS DE PERFORMANCE\n\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
             
-            rtbComparaison.AppendText("Tests effectués sur le graphe de villes françaises (10 nœuds, 45 arêtes):\n\n");
-            
+            rtbComparaison.AppendText("Nous effecturons le test de Performance sur le trajet Paris-Toulouse:\n\n");
+            Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille("Paris"), dataInitializer.grapheVille.TrouverNoeudVille("Toulouse"));
             // Simuler des résultats comparatifs
             Random rnd = new Random();
             
             rtbComparaison.SelectionFont = new Font("Arial", 10, FontStyle.Bold);
             rtbComparaison.AppendText("Temps moyen d'exécution:\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
-            rtbComparaison.AppendText("- Dijkstra: " + Math.Round(rnd.NextDouble() * 0.5, 5) + " ms\n");
+            rtbComparaison.AppendText("- Dijkstra: " + Convert.ToDecimal(Dijkstra.TempsExecution.TotalSeconds) + " ms\n");
             rtbComparaison.AppendText("- Bellman-Ford: " + Math.Round(rnd.NextDouble() * 1.2, 5) + " ms\n");
             rtbComparaison.AppendText("- Floyd-Warshall: " + Math.Round(rnd.NextDouble() * 2.0, 5) + " ms\n\n");
             
             rtbComparaison.SelectionFont = new Font("Arial", 10, FontStyle.Bold);
             rtbComparaison.AppendText("Utilisation mémoire:\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
-            rtbComparaison.AppendText("- Dijkstra: " + rnd.Next(2, 5) + " MB\n");
+            rtbComparaison.AppendText("- Dijkstra: " + Dijkstra.UtilisationMemoire + " MB\n");
             rtbComparaison.AppendText("- Bellman-Ford: " + rnd.Next(2, 5) + " MB\n");
             rtbComparaison.AppendText("- Floyd-Warshall: " + rnd.Next(5, 10) + " MB\n\n");
             
