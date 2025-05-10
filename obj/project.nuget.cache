@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fTjVLRjNSXM=",
+  "dgSpecHash": "HaZFdxA4/OQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\TransConnect.csproj",
+  "projectFilePath": "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\Transconnect.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Antoine\\.nuget\\packages\\system.windows.forms.datavisualization\\1.0.0-prerelease.20110.1\\system.windows.forms.datavisualization.1.0.0-prerelease.20110.1.nupkg.sha512"
   ],
