@@ -550,6 +550,7 @@ namespace Transconnect.UI
     {
         private DataGridView dgvEmployes;
         private Button btnAjouter;
+        private Button btnSupprimer;
         private Button btnAnnuler;
         private Label lblInfo;
 
@@ -611,6 +612,17 @@ namespace Transconnect.UI
             btnAjouter.Click += (s, e) => AjouterSubordonnes();
             this.Controls.Add(btnAjouter);
 
+            btnSupprimer = new Button
+            {
+                Text = "Supprimer",
+                Location = new Point(230, 420),
+                Size = new Size(100, 30),
+                BackColor = Color.Red
+            };
+            btnSupprimer.Click += (s, e) => SupprimerSubordonnes();
+            this.Controls.Add(btnSupprimer);
+
+
             btnAnnuler = new Button
             {
                 Text = "Annuler",
@@ -633,7 +645,7 @@ namespace Transconnect.UI
             // Filtrer pour ne pas montrer le manager lui-même ni ses subordonnés actuels
             foreach (var salarie in salaries)
             {
-                if (salarie.NumeroSS != manager.NumeroSS && !manager.Subordonnes.Contains(salarie))
+                if (salarie.NumeroSS != manager.NumeroSS)
                 {
                     dtEmployes.Rows.Add(salarie.NumeroSS, salarie.Nom, salarie.Prenom, salarie.Poste);
                 }
@@ -699,8 +711,55 @@ namespace Transconnect.UI
                     }
                 }
 
-                MessageBox.Show($"{nouveauxSubordonnes.Count} employé(s) ajouté(s) comme subordonné(s)",
-                    "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+        }
+
+        private void SupprimerSubordonnes()
+        {
+            if (dgvEmployes.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Veuillez sélectionner au moins un employé",
+                    "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            List<Salarie> subordonnesASupprimer = new List<Salarie>();
+
+            foreach (DataGridViewRow row in dgvEmployes.SelectedRows)
+            {
+                string numeroSS = row.Cells["NumeroSS"].Value.ToString();
+                Salarie subordonne = salaries.Find(s => s.NumeroSS == numeroSS);
+
+                if (subordonne != null)
+                {
+                    subordonnesASupprimer.Add(subordonne);
+                }
+            }
+
+            if (subordonnesASupprimer.Count > 0)
+            {
+                // Mettre à jour la relation dans le modèle et le graphe
+                foreach (var subordonne in subordonnesASupprimer)
+                {
+                    // Supprimer de la liste des subordonnés du manager
+                    manager.SupSubordonnes(subordonne);
+
+                    // Mettre à jour le graphe
+                    Noeud noeudManager = dataInitializer.grapheSalarie.TrouverNoeudParSalarieNumeroSS(manager.NumeroSS);
+                    Noeud noeudSubordonne = dataInitializer.grapheSalarie.TrouverNoeudParSalarieNumeroSS(subordonne.NumeroSS);
+
+                    if (noeudManager != null && noeudSubordonne != null)
+                    {
+                        // Supprimer le lien entre le manager et le subordonné
+                        Lien lienASupprimer = dataInitializer.grapheSalarie.Liens.Find(l => l.Noeud1 == noeudManager && l.Noeud2 == noeudSubordonne);
+                        if (lienASupprimer != null)
+                        {
+                            dataInitializer.grapheSalarie.SupprimerLien(lienASupprimer);
+                        }
+                    }
+                }
+
                 this.Close();
             }
         }
