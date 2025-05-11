@@ -212,6 +212,7 @@ namespace Transconnect.UI
             if (nouveauSalarie == null) return; // Si l'utilisateur a annulé l'ajout
             salarieService.AjouterSalarie(nouveauSalarie, salaries);
             ChargerSalaries();
+            DataPersistenceService.SaveSalaries(salaries);
         }
 
         private void ModifierSalarie()
@@ -223,6 +224,7 @@ namespace Transconnect.UI
             if (salarieModifie == null) return; // Si l'utilisateur a annulé la modification
             salarieService.ModifierSalarie(salarieAModifier, salarieModifie.NumeroSS, salarieModifie.Nom, salarieModifie.Prenom, salarieModifie.DateNaissance, salarieModifie.AdressePostale, salarieModifie.AdresseMail, salarieModifie.Telephone, salarieModifie.DateEntree, salarieModifie.Poste, salarieModifie.Salaire, new List<Salarie>());
             ChargerSalaries();
+            DataPersistenceService.SaveSalaries(salaries);
         }
 
         private void LicencierSalarie()
@@ -232,6 +234,8 @@ namespace Transconnect.UI
             if (salarieALicencier == null) return; // Si l'utilisateur a annulé la sélection
 
             ChargerSalaries();
+            DataPersistenceService.SaveSalaries(salaries);
+            DataPersistenceService.SaveHierarchie(salaries);
         }
 
         private void AjouterSubordonnes()
@@ -710,7 +714,7 @@ namespace Transconnect.UI
                         }
                     }
                 }
-
+                DataPersistenceService.SaveHierarchie(dataInitializer.salaries);
                 this.Close();
             }
         }
@@ -759,7 +763,7 @@ namespace Transconnect.UI
                         }
                     }
                 }
-
+                DataPersistenceService.SaveHierarchie(dataInitializer.salaries);
                 this.Close();
             }
         }
