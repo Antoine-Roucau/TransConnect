@@ -311,15 +311,19 @@ namespace Transconnect.UI
             }
             else if (algorithme == "Bellman-Ford")
             {
-                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
-                tempsExecution = Convert.ToDecimal(Math.Round(rnd.NextDouble() * 0.5, 5));
-                itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
+                BellmanFord bellmanFord = new BellmanFord(graphe);
+                bellmanFord.CalculerPlusCourtsChemins(graphe.TrouverNoeudVille(villeDepart));
+                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,bellmanFord.RecupererChemin(graphe.TrouverNoeudVille(villeArrivee))));
+                tempsExecution = Convert.ToDecimal(BellmanFord.TempsExecution.TotalSeconds);
+                itineraire = bellmanFord.RecupererChemin(graphe.TrouverNoeudVille(villeArrivee));
             }
             else if (algorithme == "Floyd-Warshall")
             {
-                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
-                tempsExecution = Convert.ToDecimal(Math.Round(rnd.NextDouble() * 0.5, 5));
-                itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
+                FloydWarshall floydWarshall = new FloydWarshall(graphe);
+                floydWarshall.CalculerPlusCourtsChemins();
+                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,floydWarshall.RecupererChemin(graphe.TrouverNoeudVille(villeDepart),graphe.TrouverNoeudVille(villeArrivee))));
+                tempsExecution = Convert.ToDecimal(FloydWarshall.TempsExecution.TotalSeconds);
+                itineraire = floydWarshall.RecupererChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee));
             }
 
             // Simuler un chemin
@@ -370,17 +374,19 @@ namespace Transconnect.UI
                 Size = new Size(900, 300),
                 BackColor = Color.White
             };
-            
+            BellmanFord bellmanFordNB = new BellmanFord(graphe);
+            bellmanFordNB.CalculerPlusCourtsChemins(graphe.TrouverNoeudVille(villeDepart));
+
             // Afficher des détails appropriés selon l'algorithme
             switch (algorithme) {
                 case "Dijkstra":
-                    txtDetails.Text = "L'algorithme de Dijkstra a exploré " + rnd.Next(5, 15) + " nœuds avant de trouver le chemin optimal.\r\n";
+                    txtDetails.Text = "L'algorithme de Dijkstra a exploré " + Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee)).Count() + " nœuds avant de trouver le chemin optimal.\r\n";
                     txtDetails.Text += "Il a utilisé une file de priorité pour sélectionner les nœuds les plus prometteurs en premier.\r\n";
                     txtDetails.Text += "Complexité spatiale: O(V)\r\n";
                     txtDetails.Text += "Complexité temporelle: O(V² + E) avec une implémentation naïve, ou O((V + E) log V) avec une file de priorité.";
                     break;
                 case "Bellman-Ford":
-                    txtDetails.Text = "L'algorithme de Bellman-Ford a effectué " + rnd.Next(5, 10) + " itérations sur l'ensemble des arêtes.\r\n";
+                    txtDetails.Text = "L'algorithme de Bellman-Ford a effectué " + bellmanFordNB.RecupererChemin(graphe.TrouverNoeudVille(villeArrivee)).Count() + " itérations sur l'ensemble des arêtes.\r\n";
                     txtDetails.Text += "Contrairement à Dijkstra, Bellman-Ford peut gérer les arêtes de poids négatif.\r\n";
                     txtDetails.Text += "Complexité spatiale: O(V)\r\n";
                     txtDetails.Text += "Complexité temporelle: O(V×E)";
@@ -461,6 +467,10 @@ namespace Transconnect.UI
             
             rtbComparaison.AppendText("Nous effecturons le test de Performance sur le trajet Paris-Toulouse:\n\n");
             Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille("Paris"), dataInitializer.grapheVille.TrouverNoeudVille("Toulouse"));
+            BellmanFord bellmanFord = new BellmanFord(dataInitializer.grapheVille);
+            bellmanFord.CalculerPlusCourtsChemins(dataInitializer.grapheVille.TrouverNoeudVille("Paris"));
+            FloydWarshall floydWarshall = new FloydWarshall(dataInitializer.grapheVille);
+            floydWarshall.CalculerPlusCourtsChemins();
             // Simuler des résultats comparatifs
             Random rnd = new Random();
             
@@ -468,15 +478,15 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("Temps moyen d'exécution:\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
             rtbComparaison.AppendText("- Dijkstra: " + Convert.ToDecimal(Dijkstra.TempsExecution.TotalSeconds) + " ms\n");
-            rtbComparaison.AppendText("- Bellman-Ford: " + Math.Round(rnd.NextDouble() * 1.2, 5) + " ms\n");
-            rtbComparaison.AppendText("- Floyd-Warshall: " + Math.Round(rnd.NextDouble() * 2.0, 5) + " ms\n\n");
+            rtbComparaison.AppendText("- Bellman-Ford: " + Convert.ToDecimal(BellmanFord.TempsExecution.TotalSeconds) + " ms\n");
+            rtbComparaison.AppendText("- Floyd-Warshall: " + Convert.ToDecimal(FloydWarshall.TempsExecution.TotalSeconds) + " ms\n\n");
             
             rtbComparaison.SelectionFont = new Font("Arial", 10, FontStyle.Bold);
             rtbComparaison.AppendText("Utilisation mémoire:\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
             rtbComparaison.AppendText("- Dijkstra: " + Dijkstra.UtilisationMemoire + " MB\n");
-            rtbComparaison.AppendText("- Bellman-Ford: " + rnd.Next(2, 5) + " MB\n");
-            rtbComparaison.AppendText("- Floyd-Warshall: " + rnd.Next(5, 10) + " MB\n\n");
+            rtbComparaison.AppendText("- Bellman-Ford: " + BellmanFord.UtilisationMemoire + " MB\n");
+            rtbComparaison.AppendText("- Floyd-Warshall: " + FloydWarshall.UtilisationMemoire + " MB\n\n");
             
             // Cas d'utilisation
             rtbComparaison.SelectionFont = new Font("Arial", 11, FontStyle.Bold);
