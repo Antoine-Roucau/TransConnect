@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gra = Transconnect.Models.Graphe;
+using System.Diagnostics;
 
 namespace Transconnect.Algorithms.PlusCourtChemin
 {
@@ -9,6 +10,8 @@ namespace Transconnect.Algorithms.PlusCourtChemin
         private Gra.Graphe _graphe;
         private Dictionary<Gra.Noeud, Dictionary<Gra.Noeud, double>> _distances;
         private Dictionary<Gra.Noeud, Dictionary<Gra.Noeud, Gra.Noeud>> _predecesseurs;
+        public static TimeSpan TempsExecution { get; private set; }
+        public static long UtilisationMemoire { get; private set; }
 
         public FloydWarshall(Gra.Graphe graphe)
         {
@@ -52,6 +55,14 @@ namespace Transconnect.Algorithms.PlusCourtChemin
 
         public void CalculerPlusCourtsChemins()
         {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            long memoireAvant = GC.GetTotalMemory(true);
+
+            Stopwatch chrono = Stopwatch.StartNew();
+
             var noeuds = _graphe.Noeuds;
 
             foreach (var k in noeuds)
@@ -72,6 +83,11 @@ namespace Transconnect.Algorithms.PlusCourtChemin
                     }
                 }
             }
+
+            chrono.Stop();
+            TempsExecution = chrono.Elapsed;
+            long memoireApres = GC.GetTotalMemory(false);
+            UtilisationMemoire = memoireApres - memoireAvant;
         }
 
         public List<Gra.Noeud> RecupererChemin(Gra.Noeud source, Gra.Noeud destination)

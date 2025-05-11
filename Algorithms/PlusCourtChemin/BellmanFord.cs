@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gra = Transconnect.Models.Graphe;
+using System.Diagnostics;
 
 namespace Transconnect.Algorithms.PlusCourtChemin
 {
@@ -10,6 +11,8 @@ namespace Transconnect.Algorithms.PlusCourtChemin
         private Gra.Graphe _graphe;
         private Dictionary<Gra.Noeud, double> _distances;
         private Dictionary<Gra.Noeud, Gra.Noeud> _predecesseurs;
+        public static TimeSpan TempsExecution { get; private set; }
+        public static long UtilisationMemoire { get; private set; }
 
         public BellmanFord(Gra.Graphe graphe)
         {
@@ -20,6 +23,14 @@ namespace Transconnect.Algorithms.PlusCourtChemin
 
         public bool CalculerPlusCourtsChemins(Gra.Noeud source)
         {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            long memoireAvant = GC.GetTotalMemory(true);
+
+            Stopwatch chrono = Stopwatch.StartNew();
+
             // Initialisation
             foreach (var noeud in _graphe.Noeuds)
             {
@@ -46,7 +57,10 @@ namespace Transconnect.Algorithms.PlusCourtChemin
                     return false;
                 }
             }
-
+            chrono.Stop();
+            TempsExecution = chrono.Elapsed;
+            long memoireApres = GC.GetTotalMemory(false);
+            UtilisationMemoire = memoireApres - memoireAvant;
             return true;
         }
 
