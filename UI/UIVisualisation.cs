@@ -166,7 +166,7 @@ namespace Transconnect.UI
                 Size = new Size(150, 20),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
-            cmbAlgorithme.Items.AddRange(new object[] { "Dijkstra", "Bellman-Ford", "Floyd-Warshall" });
+            cmbAlgorithme.Items.AddRange(new object[] { "Dijkstra", "Bellman-Ford", "Floyd-Warshall","A*" });
             cmbAlgorithme.SelectedIndex = 0; // Dijkstra par défaut
             tabPlusCourtChemin.Controls.Add(cmbAlgorithme);
 
@@ -325,8 +325,16 @@ namespace Transconnect.UI
                 tempsExecution = Convert.ToDecimal(FloydWarshall.TempsExecution.TotalSeconds);
                 itineraire = floydWarshall.RecupererChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee));
             }
+            else if (algorithme == "A*")
+            {
+                AStar aStar = new AStar(graphe);
+                aStar.CalculerPlusCourtChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee));
+                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,aStar.RecupererChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
+                tempsExecution = Convert.ToDecimal(AStar.TempsExecution.TotalSeconds);
+                itineraire = aStar.RecupererChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee));
+            }
 
-            // Simuler un chemin
+
             List<string> chemin = new List<string>();
 
             foreach (var noeud in itineraire)
@@ -397,6 +405,12 @@ namespace Transconnect.UI
                     txtDetails.Text += "Complexité spatiale: O(V²)\r\n";
                     txtDetails.Text += "Complexité temporelle: O(V³)";
                     break;
+                case "A*":
+                    txtDetails.Text = "L'algorithme A* a utilisé une heuristique pour guider la recherche du chemin le plus court.\r\n";
+                    txtDetails.Text += "Il est efficace pour les graphes avec des poids positifs et peut être optimisé avec différentes heuristiques.\r\n";
+                    txtDetails.Text += "Complexité spatiale: O(V)\r\n";
+                    txtDetails.Text += "Complexité temporelle: O((V + E) log V)";
+                    break;
             }
             
             pnlResultats.Controls.Add(txtDetails);
@@ -459,6 +473,16 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("- Beaucoup plus coûteux pour un seul chemin, mais optimal pour tous les chemins\n");
             rtbComparaison.AppendText("- Complexité temporelle: O(V³)\n");
             rtbComparaison.AppendText("- Complexité spatiale: O(V²)\n\n");
+
+            rtbComparaison.SelectionFont = new Font("Arial", 10, FontStyle.Bold);
+            rtbComparaison.AppendText("A*\n");
+            rtbComparaison.SelectionFont = new Font("Arial", 10);
+            rtbComparaison.AppendText("- Utilise une heuristique pour guider la recherche du chemin le plus court\n");
+            rtbComparaison.AppendText("- Très efficace pour les graphes avec des poids positifs\n");
+            rtbComparaison.AppendText("- Peut être optimisé avec différentes heuristiques\n");
+            rtbComparaison.AppendText("- Complexité temporelle: O((V + E) log V)\n");
+            rtbComparaison.AppendText("- Complexité spatiale: O(V)\n\n");
+
             
             // Tests de performance
             rtbComparaison.SelectionFont = new Font("Arial", 11, FontStyle.Bold);
@@ -471,6 +495,8 @@ namespace Transconnect.UI
             bellmanFord.CalculerPlusCourtsChemins(dataInitializer.grapheVille.TrouverNoeudVille("Paris"));
             FloydWarshall floydWarshall = new FloydWarshall(dataInitializer.grapheVille);
             floydWarshall.CalculerPlusCourtsChemins();
+            AStar aStar = new AStar(dataInitializer.grapheVille);
+            aStar.CalculerPlusCourtChemin(dataInitializer.grapheVille.TrouverNoeudVille("Paris"), dataInitializer.grapheVille.TrouverNoeudVille("Toulouse"));
             // Simuler des résultats comparatifs
             Random rnd = new Random();
             
@@ -480,6 +506,7 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("- Dijkstra: " + Convert.ToDecimal(Dijkstra.TempsExecution.TotalSeconds) + " ms\n");
             rtbComparaison.AppendText("- Bellman-Ford: " + Convert.ToDecimal(BellmanFord.TempsExecution.TotalSeconds) + " ms\n");
             rtbComparaison.AppendText("- Floyd-Warshall: " + Convert.ToDecimal(FloydWarshall.TempsExecution.TotalSeconds) + " ms\n\n");
+            rtbComparaison.AppendText("- A*: " + Convert.ToDecimal(AStar.TempsExecution.TotalSeconds) + " ms\n\n");
             
             rtbComparaison.SelectionFont = new Font("Arial", 10, FontStyle.Bold);
             rtbComparaison.AppendText("Utilisation mémoire:\n");
@@ -487,6 +514,7 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("- Dijkstra: " + Dijkstra.UtilisationMemoire + " MB\n");
             rtbComparaison.AppendText("- Bellman-Ford: " + BellmanFord.UtilisationMemoire + " MB\n");
             rtbComparaison.AppendText("- Floyd-Warshall: " + FloydWarshall.UtilisationMemoire + " MB\n\n");
+            rtbComparaison.AppendText("- A*: " + AStar.UtilisationMemoire + " MB\n\n");
             
             // Cas d'utilisation
             rtbComparaison.SelectionFont = new Font("Arial", 11, FontStyle.Bold);
@@ -508,6 +536,12 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("- Le graphe est dense (beaucoup d'arêtes)\n");
             rtbComparaison.AppendText("- La simplicité d'implémentation est prioritaire\n");
             rtbComparaison.AppendText("- Le graphe est relativement petit\n\n");
+
+            rtbComparaison.AppendText("Utiliser A* lorsque:\n");
+            rtbComparaison.AppendText("- Vous avez une bonne heuristique pour guider la recherche\n");
+            rtbComparaison.AppendText("- Vous recherchez le chemin le plus court dans un graphe avec des poids positifs\n");
+            rtbComparaison.AppendText("- Vous avez besoin d'une performance optimale pour un seul chemin\n");
+            rtbComparaison.AppendText("- Vous souhaitez explorer le graphe de manière plus ciblée\n\n");
             
             // Conclusion
             rtbComparaison.SelectionFont = new Font("Arial", 11, FontStyle.Bold);
