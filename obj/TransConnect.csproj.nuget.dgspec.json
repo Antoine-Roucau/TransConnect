@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\TransConnect.csproj": {}
+    "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\Transconnect.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\TransConnect.csproj": {
+    "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\Transconnect.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\TransConnect.csproj",
-        "projectName": "TransConnect",
-        "projectPath": "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\TransConnect.csproj",
+        "projectUniqueName": "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\Transconnect.csproj",
+        "projectName": "Transconnect",
+        "projectPath": "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\Transconnect.csproj",
         "packagesPath": "C:\\Users\\Antoine\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\Antoine\\OneDrive\\Bordel\\Documents\\GitHub\\TransConnect\\obj\\",
         "projectStyle": "PackageReference",
