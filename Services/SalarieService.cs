@@ -94,32 +94,43 @@ namespace Transconnect.Services
             // Étape 1 : Trouver le supérieur hiérarchique via le graphe
             var superieur = graphe.TrouverSuperieur(salarieALicencier);
 
-            // Étape 2 : Promouvoir les subordonnés
-            var subordonnes = graphe.ObtenirSubordonnes(salarieALicencier);
+            // Étape 2 : Gérer les subordonnés
+            var subordonnes = new List<Mod.Salarie>(salarieALicencier.Subordonnes);
 
             foreach (var sub in subordonnes)
             {
                 if (sub == null) continue;
 
-                // Changement de rattachement
+                // Promouvoir le subordonné (changer de poste si nécessaire)
+                if (!string.IsNullOrEmpty(salarieALicencier.Poste))
+                {
+                    // On peut ajuster cette logique selon les besoins métier
+                    sub.Poste = sub.Poste; // Garder son poste actuel ou le promouvoir
+                }
+
+                // Retirer de la liste des subordonnés du licencié
+                salarieALicencier.SupSubordonnes(sub);
+
+                // Ajouter au supérieur si il y en a un
                 if (superieur != null)
                 {
                     graphe.AjouterRelation(superieur, sub);
                 }
-
-                sub.Poste = $"Ancien poste de {salarieALicencier.Nom}";
             }
 
-            // Étape 3 : Supprimer les relations du salarié licencié
+            // Étape 3 : Supprimer les relations hiérarchiques du salarié licencié
             if (superieur != null)
             {
                 graphe.SupprimerRelation(superieur, salarieALicencier);
             }
 
-            // Étape 4 : Supprimer ses subordonnés dans le graphe
-            graphe.graphe.Remove(salarieALicencier);
+            // Étape 4 : Supprimer de la structure de données du graphe
+            if (graphe.graphe.ContainsKey(salarieALicencier))
+            {
+                graphe.graphe.Remove(salarieALicencier);
+            }
 
-            // Étape 5 : Retirer le salarié de la liste
+            // Étape 5 : Retirer le salarié de la liste principale
             salarieList.Remove(salarieALicencier);
         }
 

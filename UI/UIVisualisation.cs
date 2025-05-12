@@ -327,11 +327,7 @@ namespace Transconnect.UI
             }
             else if (algorithme == "A*")
             {
-                AStar aStar = new AStar(graphe);
-                aStar.CalculerPlusCourtChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee));
-                distance = Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,aStar.RecupererChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee))));
-                tempsExecution = Convert.ToDecimal(AStar.TempsExecution.TotalSeconds);
-                itineraire = aStar.RecupererChemin(graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee));
+
             }
 
 
@@ -495,8 +491,7 @@ namespace Transconnect.UI
             bellmanFord.CalculerPlusCourtsChemins(dataInitializer.grapheVille.TrouverNoeudVille("Paris"));
             FloydWarshall floydWarshall = new FloydWarshall(dataInitializer.grapheVille);
             floydWarshall.CalculerPlusCourtsChemins();
-            AStar aStar = new AStar(dataInitializer.grapheVille);
-            aStar.CalculerPlusCourtChemin(dataInitializer.grapheVille.TrouverNoeudVille("Paris"), dataInitializer.grapheVille.TrouverNoeudVille("Toulouse"));
+
             // Simuler des résultats comparatifs
             Random rnd = new Random();
             
@@ -506,7 +501,7 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("- Dijkstra: " + Convert.ToDecimal(Dijkstra.TempsExecution.TotalSeconds) + " ms\n");
             rtbComparaison.AppendText("- Bellman-Ford: " + Convert.ToDecimal(BellmanFord.TempsExecution.TotalSeconds) + " ms\n");
             rtbComparaison.AppendText("- Floyd-Warshall: " + Convert.ToDecimal(FloydWarshall.TempsExecution.TotalSeconds) + " ms\n\n");
-            rtbComparaison.AppendText("- A*: " + Convert.ToDecimal(AStar.TempsExecution.TotalSeconds) + " ms\n\n");
+            rtbComparaison.AppendText("- A*: " + "PLACEHOLDER" + " ms\n\n");
             
             rtbComparaison.SelectionFont = new Font("Arial", 10, FontStyle.Bold);
             rtbComparaison.AppendText("Utilisation mémoire:\n");
@@ -514,7 +509,7 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("- Dijkstra: " + Dijkstra.UtilisationMemoire + " MB\n");
             rtbComparaison.AppendText("- Bellman-Ford: " + BellmanFord.UtilisationMemoire + " MB\n");
             rtbComparaison.AppendText("- Floyd-Warshall: " + FloydWarshall.UtilisationMemoire + " MB\n\n");
-            rtbComparaison.AppendText("- A*: " + AStar.UtilisationMemoire + " MB\n\n");
+            rtbComparaison.AppendText("- A*: " + "PLACEHOLDER" + " MB\n\n");
             
             // Cas d'utilisation
             rtbComparaison.SelectionFont = new Font("Arial", 11, FontStyle.Bold);

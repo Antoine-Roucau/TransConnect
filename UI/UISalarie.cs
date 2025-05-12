@@ -6,6 +6,7 @@ using Transconnect.Data;
 using Transconnect.Models;
 using Transconnect.Models.Graphe;
 using Transconnect.Services;
+using System.Collections.Generic;
 
 namespace Transconnect.UI
 {
@@ -229,11 +230,23 @@ namespace Transconnect.UI
 
         private void LicencierSalarie()
         {
-
             Salarie salarieALicencier = salaries[dgvSalaries.SelectedRows[0].Index];
-            if (salarieALicencier == null) return; // Si l'utilisateur a annulé la sélection
+
+            var grapheDict = new Dictionary<Salarie, List<Salarie>>();
+            foreach (var salarie in salaries)
+            {
+                grapheDict[salarie] = salarie.Subordonnes;
+            }
+            OrganigrammeService organigrammeService = new OrganigrammeService(grapheDict);
+
+            salarieService.LicencierSalarie(salarieALicencier, salaries, organigrammeService);
+
+            dataInitializer.grapheSalarie.Liens.RemoveAll(l => (l.Noeud1.Entite is Salarie s1 && s1.NumeroSS == salarieALicencier.NumeroSS) ||(l.Noeud2.Entite is Salarie s2 && s2.NumeroSS == salarieALicencier.NumeroSS));
+                
+            dataInitializer.grapheSalarie.Noeuds.RemoveAll(n => n.Entite is Salarie s && s.NumeroSS == salarieALicencier.NumeroSS);
 
             ChargerSalaries();
+            pnlInfos.Controls.Clear();
             DataPersistenceService.SaveSalaries(salaries);
             DataPersistenceService.SaveHierarchie(salaries);
         }

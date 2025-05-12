@@ -6,6 +6,7 @@ using Gra = Transconnect.Models.Graphe;
 
 namespace Transconnect.Algorithms.PlusCourtChemin
 {
+    /*
     public class AStar
     {
         private Gra.Graphe _graphe;
@@ -20,7 +21,7 @@ namespace Transconnect.Algorithms.PlusCourtChemin
             _distances = new Dictionary<Gra.Noeud, double>();
             _predecesseurs = new Dictionary<Gra.Noeud, Gra.Noeud>();
         }
-
+        
         public bool CalculerPlusCourtChemin(Gra.Noeud source, Gra.Noeud destination, Func<Gra.Noeud, Gra.Noeud, double> heuristique)
         {
             GC.Collect();
@@ -97,4 +98,5 @@ namespace Transconnect.Algorithms.PlusCourtChemin
             return _distances.ContainsKey(noeud) ? _distances[noeud] : double.PositiveInfinity;
         }
     }
+    */
 }
