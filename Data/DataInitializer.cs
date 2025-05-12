@@ -237,6 +237,14 @@ namespace Transconnect.Data
             visualiseur.AfficherOrganigramme();
         }
 
+        public void SaveAllData()
+        {
+            DataPersistenceService.SaveClients(clients);
+            DataPersistenceService.SaveSalaries(salaries);
+            DataPersistenceService.SaveHierarchie(salaries);
+            DataPersistenceService.SaveCommandes(commandes);
+            DataPersistenceService.SaveVehicules(vehicules);
+        }
         #endregion
     }
 }

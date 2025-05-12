@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Transconnect.Models
 {
+    public delegate void CommandeStatusChangedEventHandler(Commande commande, StatutCommande ancienStatut, StatutCommande nouveauStatut);
 
     public enum StatutCommande
     {
@@ -24,6 +25,7 @@ namespace Transconnect.Models
         decimal prix;
         StatutCommande statut = StatutCommande.EnAttente;
 
+        public event CommandeStatusChangedEventHandler StatusChanged;
         
         Client? client;
         Salarie? chauffeur;
@@ -119,7 +121,10 @@ namespace Transconnect.Models
             if (statut == StatutCommande.Annulee)
                 throw new InvalidOperationException("Impossible de modifier une commande annulée");
             
+            var ancienStatut = statut;
             statut = nouveauStatut;
+            
+            StatusChanged?.Invoke(this, ancienStatut, nouveauStatut);
         }
         #endregion
     }

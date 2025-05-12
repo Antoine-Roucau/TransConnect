@@ -9,3 +9,18 @@ GG-901-HH;1;Peugeot Boxer;10;1,85;true;Livraison express colis
 HH-234-II;3;MAN TGX;22;2,90;true;Gravats et terre
 II-567-JJ;2;Iveco Stralis;25000;3,20;true;Produits chimiques
 JJ-890-KK;0;Peugeot 508;5;1,45;true;
+KK-123-LL;3;DAF XF;26;2,85;true;Matériaux lourds
+LL-456-MM;2;Renault Trucks T;26000;3,10;true;Produits pétroliers
+MM-789-NN;4;Volvo FH;20;3,35;true;-18°C
+NN-012-OO;1;Citroën Jumper;14;1,90;true;Livraison de colis
+OO-345-PP;0;Renault Zoe;2;1,30;true;
+PP-678-QQ;4;Mercedes Actros;25;3,40;true;-22°C
+QQ-901-RR;1;Ford Transit;15;2,00;true;Transport d'équipements
+RR-234-SS;3;Scania G450;24;2,95;true;Matériaux de construction
+SS-567-TT;2;MAN TGX;27000;3,25;true;Produits chimiques
+TT-890-UU;0;BMW i3;3;1,40;true;
+UU-123-VV;3;Iveco S-Way;23;3,00;true;Déchets de chantier
+VV-456-WW;2;DAF CF;24000;3,15;true;Liquides industriels
+WW-789-XX;4;Renault Trucks T;21;3,30;true;-15°C
+XX-012-YY;1;Mercedes Sprinter;13;1,80;true;Livraisons urbaines
+YY-345-ZZ;0;Volkswagen ID.4;5;1,50;true;

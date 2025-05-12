@@ -21,6 +21,8 @@ namespace Transconnect.UI
         {
             this.dataInitializer = dataInitializer;
             InitializeComponents();
+
+            this.FormClosing += (s, e) => dataInitializer.SaveAllData();
         }
 
         private void InitializeComponents()
@@ -159,5 +161,6 @@ namespace Transconnect.UI
             var formVisu = new UIVisualisation(dataInitializer);
             formVisu.ShowDialog();
         }
+
     }
 }

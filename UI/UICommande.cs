@@ -372,7 +372,7 @@ namespace Transconnect.UI
             if (commandeModifie == null) return; // Si l'utilisateur a annulé la modification
             commandeService.ModifierCommande(commandeAModifier.Id, commandeModifie);
             ChargerCommandes();
-
+            DataPersistenceService.SaveCommandes(commandes);
         }
 
         private void AnnulerCommande()
@@ -388,6 +388,7 @@ namespace Transconnect.UI
                 commandeAModifier.ChangerStatut(StatutCommande.Annulee);
             }
             ChargerCommandes();
+            DataPersistenceService.SaveCommandes(commandes);
         }
 
         private void PayerCommande()
@@ -398,6 +399,7 @@ namespace Transconnect.UI
                 commandeAModifier.ChangerStatut(StatutCommande.Payee);
             }
             ChargerCommandes();
+            DataPersistenceService.SaveCommandes(commandes);
         }
 
         private void LivrerCommande()
@@ -412,6 +414,7 @@ namespace Transconnect.UI
                 MessageBox.Show("La commande doit être payée avant d'être livrée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             ChargerCommandes();
+            DataPersistenceService.SaveCommandes(commandes);
         }
 
         private void SupprimerCommande()
@@ -420,6 +423,7 @@ namespace Transconnect.UI
             Commande commandeASupprimer = commandes[index];
             commandeService.SupprimerCommande(commandeASupprimer.Id);
             ChargerCommandes();
+            DataPersistenceService.SaveCommandes(commandes);
         }
         
         private void EnregistrerCommande()
@@ -513,6 +517,8 @@ namespace Transconnect.UI
 
             tabCommandes.SelectedTab = tabListeCommandes;
             ChargerCommandes();
+            DataPersistenceService.SaveCommandes(commandes);
+            DataPersistenceService.SaveClients(dataInitializer.clients);
 
         }
 

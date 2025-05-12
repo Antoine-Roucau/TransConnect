@@ -270,6 +270,7 @@ namespace Transconnect.UI
             if (nouveauClient == null) return; // Si l'utilisateur a annulé l'ajout
             clientService.AjouterClient(nouveauClient, clients);
             ChargerClients();
+            DataPersistenceService.SaveClients(clients);
         }
 
         private void ModifierClient()
@@ -281,13 +282,14 @@ namespace Transconnect.UI
             if (clientModifie == null) return; // Si l'utilisateur a annulé la modification
             clientService.ModifierClient(clientAModifier, clientModifie, clients);
             ChargerClients();
-
+            DataPersistenceService.SaveClients(clients);
         }
 
         private void SupprimerClient()
         {
             clientService.SupprimerClient(clients[dgvClients.SelectedRows[0].Index], clients);
             ChargerClients();
+            DataPersistenceService.SaveClients(clients);
         }
 
     }

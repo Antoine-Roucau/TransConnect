@@ -16,6 +16,20 @@ namespace Transconnect.Services
         {
             _commandes = commandes;
         }
+        public void AbonnerAuxChangementsDeStatut(Commande commande)
+        {
+            commande.StatusChanged += OnCommandeStatusChanged;
+        }
+
+        private void OnCommandeStatusChanged(Commande commande, StatutCommande ancienStatut, StatutCommande nouveauStatut)
+        {
+            Console.WriteLine($"Commande {commande.Id} : {ancienStatut} -> {nouveauStatut}");
+            
+            if (nouveauStatut == StatutCommande.Livree && commande.Vehicule != null)
+            {
+                commande.Vehicule.EstDisponible = true;
+            }
+        }
 
         public void AjouterCommande(Commande commande)
         {

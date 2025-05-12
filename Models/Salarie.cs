@@ -3,7 +3,12 @@ using System.Collections.Generic;
 
 namespace Transconnect.Models 
 {
-    public class Salarie : Personne
+    public interface ISerializable
+    {
+        string Serialize();
+        void Deserialize(string data);
+    }
+    public class Salarie : Personne , ISerializable
     {
         #region Propriétés
         DateTime dateEntree;
@@ -76,6 +81,27 @@ namespace Transconnect.Models
                 }
             }
             return infos;
+        }
+        public string Serialize()
+        {
+            return $"{numeroSS};{nom};{prenom};{dateNaissance.ToString("yyyy-MM-dd")};{adressePostale};{adresseMail};{telephone};{dateEntree.ToString("yyyy-MM-dd")};{poste};{salaire}";
+        }
+        public void Deserialize(string data)
+        {
+            string[] parts = data.Split(';');
+            if (parts.Length == 10)
+            {
+                numeroSS = parts[0];
+                nom = parts[1];
+                prenom = parts[2];
+                dateNaissance = DateTime.Parse(parts[3]);
+                adressePostale = parts[4];
+                adresseMail = parts[5];
+                telephone = parts[6];
+                dateEntree = DateTime.Parse(parts[7]);
+                poste = parts[8];
+                salaire = decimal.Parse(parts[9]);
+            }
         }
         #endregion
     }
