@@ -13,10 +13,8 @@ namespace Transconnect
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            // Initialiser les données
             DataInitializer dataInitializer = new DataInitializer();
             
-            // Lancer le menu principal
             Application.Run(new MenuPrincipal(dataInitializer));
         }
     }

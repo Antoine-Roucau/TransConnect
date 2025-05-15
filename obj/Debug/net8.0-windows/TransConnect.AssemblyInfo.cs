@@ -13,9 +13,15 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Transconnect")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< Updated upstream
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f02da14ed47579c97be6caa6948cdc70f49cc72")]
 [assembly: System.Reflection.AssemblyProductAttribute("Transconnect")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Transconnect")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9a7f008350a2f4c9051a1ccede891681121c394")]
+[assembly: System.Reflection.AssemblyProductAttribute("TransConnect")]
+[assembly: System.Reflection.AssemblyTitleAttribute("TransConnect")]
+>>>>>>> Stashed changes
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]
