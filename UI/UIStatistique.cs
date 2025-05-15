@@ -2,7 +2,6 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using Transconnect.Data;
 using Transconnect.Models;
 using Transconnect.Models.Graphe;
@@ -33,7 +32,6 @@ namespace Transconnect.UI
         private DateTimePicker dtpDebut;
         private DateTimePicker dtpFin;
         private Button btnFiltrer;
-
         private DataInitializer dataInitializer;
         private List<Salarie> chauffeurs = new List<Salarie>();
         private List<Client> clients = new List<Client>();
@@ -61,13 +59,11 @@ namespace Transconnect.UI
 
         private void InitializeComponents()
         {
-            // Configuration du formulaire
             this.Text = "TransConnect - Statistiques";
             this.Size = new Size(1000, 720);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
-            // Panel pour les filtres de dates
             Panel pnlFiltres = new Panel
             {
                 Location = new Point(20, 20),
@@ -123,7 +119,6 @@ namespace Transconnect.UI
             btnFiltrer.Click += (s, e) => ChargerStatistiques();
             pnlFiltres.Controls.Add(btnFiltrer);
 
-            // TabControl
             tabStats = new TabControl
             {
                 Location = new Point(20, 80),
@@ -132,7 +127,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(tabStats);
 
-            // Tab Chauffeurs
             tabChauffeurs = new TabPage
             {
                 Text = "Statistiques par chauffeur",
@@ -152,7 +146,6 @@ namespace Transconnect.UI
             };
             tabChauffeurs.Controls.Add(dgvStatsChauffeurs);
 
-            // Tab Commandes
             tabCommandes = new TabPage
             {
                 Text = "Statistiques des commandes",
@@ -172,7 +165,6 @@ namespace Transconnect.UI
             };
             tabCommandes.Controls.Add(dgvStatsCommandes);
 
-            // Tab Clients
             tabClients = new TabPage
             {
                 Text = "Statistiques par client",
@@ -192,7 +184,6 @@ namespace Transconnect.UI
             };
             tabClients.Controls.Add(dgvStatsClients);
 
-            // Tab Revenus
             tabRevenue = new TabPage
             {
                 Text = "Graphique des revenus",
@@ -210,7 +201,6 @@ namespace Transconnect.UI
             };
             tabRevenue.Controls.Add(pnlRevenueChart);
 
-            // Add a placeholder title
             Label lblChartTitle = new Label
             {
                 Text = "Évolution des revenus",
@@ -221,7 +211,6 @@ namespace Transconnect.UI
             };
             pnlRevenueChart.Controls.Add(lblChartTitle);
 
-            // Boutons
             btnExporter = new Button
             {
                 Text = "Exporter les statistiques",
@@ -279,7 +268,6 @@ namespace Transconnect.UI
                 {
                     if (commande.Chauffeur.NumeroSS == chauffeur.NumeroSS && commande.Date >= dtpDebut.Value && commande.Date <= dtpFin.Value)
                     {
-                        // Calculer la distance totale
                         distanceTotale += Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe, Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(commande.VilleDepart), graphe.TrouverNoeudVille(commande.VilleArrivee))));
                     }
                 }
@@ -402,11 +390,9 @@ namespace Transconnect.UI
 
         private void ChargerGraphiqueRevenues()
         {
-            // Get the panel from the form
             Panel pnlRevenueChart = (Panel)tabRevenue.Controls["pnlRevenueChart"];
             if (pnlRevenueChart == null)
             {
-                // If not found, create it
                 pnlRevenueChart = new Panel
                 {
                     Name = "pnlRevenueChart",
@@ -418,10 +404,8 @@ namespace Transconnect.UI
                 tabRevenue.Controls.Add(pnlRevenueChart);
             }
 
-            // Clear existing controls
             pnlRevenueChart.Controls.Clear();
 
-            // Add title
             Label lblTitle = new Label
             {
                 Text = $"Revenus mensuels ({dtpDebut.Value:MMM yy} - {dtpFin.Value:MMM yy})",
@@ -432,7 +416,6 @@ namespace Transconnect.UI
             };
             pnlRevenueChart.Controls.Add(lblTitle);
 
-            // Collect data for the visualization
             DateTime debut = dtpDebut.Value;
             DateTime fin = dtpFin.Value;
 
@@ -443,7 +426,6 @@ namespace Transconnect.UI
             {
                 if (date > fin) break;
 
-                // Calculate revenue for the month
                 decimal revenuMensuel = commandes
                     .Where(c => c.Date.Year == date.Year && c.Date.Month == date.Month)
                     .Sum(c => c.Prix);
@@ -452,7 +434,6 @@ namespace Transconnect.UI
                 revenus.Add(revenuMensuel);
             }
 
-            // Check if we have data
             if (mois.Count == 0)
             {
                 Label lblNoData = new Label
@@ -467,36 +448,33 @@ namespace Transconnect.UI
                 return;
             }
 
-            // Create a simple bar chart visualization
+
             decimal maxRevenu = revenus.Count > 0 ? revenus.Max() : 0;
-            maxRevenu = maxRevenu > 0 ? maxRevenu : 1; // Avoid division by zero
+            maxRevenu = maxRevenu > 0 ? maxRevenu : 1;
 
             int barWidth = Math.Min(80, (pnlRevenueChart.Width - 100) / Math.Max(1, mois.Count));
             int maxBarHeight = 350;
             int startY = 60;
             int startX = 50;
 
-            // Draw the bars and labels
             for (int i = 0; i < mois.Count; i++)
             {
                 string labelText = mois[i].ToString("MMM yy");
                 decimal revenu = revenus[i];
 
-                // Calculate bar height proportional to max revenue
-                int barHeight = (int)(revenu / maxRevenu * maxBarHeight);
-                if (barHeight < 1 && revenu > 0) barHeight = 1; // Minimum height for visibility
 
-                // Create the bar
+                int barHeight = (int)(revenu / maxRevenu * maxBarHeight);
+                if (barHeight < 1 && revenu > 0) barHeight = 1; 
+
                 Panel barPanel = new Panel
                 {
                     BackColor = Color.SteelBlue,
                     Location = new Point(startX + i * (barWidth + 20), startY + (maxBarHeight - barHeight)),
-                    Size = new Size(barWidth, Math.Max(1, barHeight)), // Ensure at least 1px height
+                    Size = new Size(barWidth, Math.Max(1, barHeight)),
                     BorderStyle = BorderStyle.None
                 };
                 pnlRevenueChart.Controls.Add(barPanel);
 
-                // Add month label
                 Label lblMonth = new Label
                 {
                     Text = labelText,
@@ -507,7 +485,6 @@ namespace Transconnect.UI
                 };
                 pnlRevenueChart.Controls.Add(lblMonth);
 
-                // Add revenue value
                 Label lblRevenue = new Label
                 {
                     Text = revenu.ToString("C0"),
@@ -520,7 +497,6 @@ namespace Transconnect.UI
                 pnlRevenueChart.Controls.Add(lblRevenue);
             }
 
-            // Add a legend
             Label lblLegend = new Label
             {
                 Text = "Ce graphique montre les revenus mensuels sur la période sélectionnée",
@@ -531,7 +507,6 @@ namespace Transconnect.UI
             };
             pnlRevenueChart.Controls.Add(lblLegend);
 
-            // Add Y-axis labels
             for (int i = 0; i <= 5; i++)
             {
                 decimal value = maxRevenu * i / 5;
@@ -545,75 +520,84 @@ namespace Transconnect.UI
                 };
                 pnlRevenueChart.Controls.Add(lblYAxis);
             }
-
-            // Draw trend line (optional - simple linear trend)
-            if (mois.Count >= 2)
-            {
-                // Calculate simple linear regression
-                double[] xValues = Enumerable.Range(0, mois.Count).Select(i => (double)i).ToArray();
-                double[] yValues = revenus.Select(r => (double)r).ToArray();
-
-                double sumX = xValues.Sum();
-                double sumY = yValues.Sum();
-                double sumXY = xValues.Zip(yValues, (x, y) => x * y).Sum();
-                double sumX2 = xValues.Sum(x => x * x);
-                double n = xValues.Length;
-
-                double slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-                double intercept = (sumY - slope * sumX) / n;
-
-                // Draw red trend line
-                for (int i = 0; i < mois.Count - 1; i++)
-                {
-                    int x1 = startX + i * (barWidth + 20) + barWidth / 2;
-                    int x2 = startX + (i + 1) * (barWidth + 20) + barWidth / 2;
-
-                    double y1 = slope * i + intercept;
-                    double y2 = slope * (i + 1) + intercept;
-
-                    // Convert to screen coordinates
-                    int screenY1 = startY + maxBarHeight - (int)(y1 / Convert.ToDouble(maxRevenu) * maxBarHeight);
-                    int screenY2 = startY + maxBarHeight - (int)(y2 / Convert.ToDouble(maxRevenu) * maxBarHeight);
-
-                    // Create a line using a skinny panel
-                    int lineLength = (int)Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(screenY2 - screenY1, 2));
-                    double angle = Math.Atan2(screenY2 - screenY1, x2 - x1) * 180 / Math.PI;
-
-                    Panel linePanel = new Panel
-                    {
-                        BackColor = Color.Firebrick,
-                        Location = new Point(x1, screenY1),
-                        Size = new Size(lineLength, 2)
-                    };
-
-                    Label lblTrend = new Label
-                    {
-                        Text = slope > 0 ? "▲ Tendance à la hausse" : "▼ Tendance à la baisse",
-                        ForeColor = slope > 0 ? Color.Green : Color.Red,
-                        Font = new Font("Arial", 9, FontStyle.Bold),
-                        Location = new Point(700, 20),
-                        Size = new Size(200, 20),
-                        TextAlign = ContentAlignment.MiddleRight
-                    };
-                    pnlRevenueChart.Controls.Add(lblTrend);
-
-                    break; // Just add the label once
-                }
-            }
         }
 
         private void ExporterStatistiques()
         {
-            // Placeholder pour l'exportation des statistiques
-            SaveFileDialog saveDialog = new SaveFileDialog
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                Filter = "Fichiers Excel (*.xlsx)|*.xlsx|Fichiers CSV (*.csv)|*.csv",
-                Title = "Exporter les statistiques"
-            };
+                saveFileDialog.Filter = "Fichier CSV (*.csv)|*.csv";
+                saveFileDialog.Title = "Exporter les statistiques";
+                saveFileDialog.FileName = "statistiques.csv";
 
-            if (saveDialog.ShowDialog() == DialogResult.OK)
-            {
-                MessageBox.Show($"Les statistiques ont été exportées vers {saveDialog.FileName}", "Exportation réussie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (System.IO.StreamWriter writer = new System.IO.StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.UTF8))
+                        {
+
+                            writer.WriteLine("Statistiques par chauffeur");
+                            for (int i = 0; i < dgvStatsChauffeurs.Columns.Count; i++)
+                            {
+                                writer.Write(dgvStatsChauffeurs.Columns[i].HeaderText);
+                                if (i < dgvStatsChauffeurs.Columns.Count - 1) writer.Write(";");
+                            }
+                            writer.WriteLine();
+                            foreach (DataGridViewRow row in dgvStatsChauffeurs.Rows)
+                            {
+                                for (int i = 0; i < dgvStatsChauffeurs.Columns.Count; i++)
+                                {
+                                    writer.Write(row.Cells[i].Value?.ToString());
+                                    if (i < dgvStatsChauffeurs.Columns.Count - 1) writer.Write(";");
+                                }
+                                writer.WriteLine();
+                            }
+                            writer.WriteLine();
+
+
+                            writer.WriteLine("Statistiques des commandes");
+                            for (int i = 0; i < dgvStatsCommandes.Columns.Count; i++)
+                            {
+                                writer.Write(dgvStatsCommandes.Columns[i].HeaderText);
+                                if (i < dgvStatsCommandes.Columns.Count - 1) writer.Write(";");
+                            }
+                            writer.WriteLine();
+                            foreach (DataGridViewRow row in dgvStatsCommandes.Rows)
+                            {
+                                for (int i = 0; i < dgvStatsCommandes.Columns.Count; i++)
+                                {
+                                    writer.Write(row.Cells[i].Value?.ToString());
+                                    if (i < dgvStatsCommandes.Columns.Count - 1) writer.Write(";");
+                                }
+                                writer.WriteLine();
+                            }
+                            writer.WriteLine();
+
+                            writer.WriteLine("Statistiques par client");
+                            for (int i = 0; i < dgvStatsClients.Columns.Count; i++)
+                            {
+                                writer.Write(dgvStatsClients.Columns[i].HeaderText);
+                                if (i < dgvStatsClients.Columns.Count - 1) writer.Write(";");
+                            }
+                            writer.WriteLine();
+                            foreach (DataGridViewRow row in dgvStatsClients.Rows)
+                            {
+                                for (int i = 0; i < dgvStatsClients.Columns.Count; i++)
+                                {
+                                    writer.Write(row.Cells[i].Value?.ToString());
+                                    if (i < dgvStatsClients.Columns.Count - 1) writer.Write(";");
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        MessageBox.Show("Statistiques exportées avec succès !", "Exportation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Erreur lors de l'exportation : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
     }
