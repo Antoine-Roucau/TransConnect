@@ -37,13 +37,11 @@ namespace Transconnect.UI
 
         private void InitializeComponents()
         {
-            // Configuration du formulaire
             this.Text = "TransConnect - Gestion des Salariés";
             this.Size = new Size(1000, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
-            // Titre
             lblTitre = new Label
             {
                 Text = "Gestion des Salariés",
@@ -53,7 +51,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(lblTitre);
 
-            // DataGridView pour afficher les salariés
             dgvSalaries = new DataGridView
             {
                 Location = new Point(20, 60),
@@ -69,7 +66,6 @@ namespace Transconnect.UI
             dgvSalaries.SelectionChanged += (s, e) => AfficherInfosSalarie();
             this.Controls.Add(dgvSalaries);
 
-            // Panel pour afficher les infos détaillées du salarié
             pnlInfos = new Panel
             {
                 Location = new Point(20, 470),
@@ -79,7 +75,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(pnlInfos);
 
-            // Boutons d'action
             btnAjouter = new Button
             {
                 Text = "Ajouter un salarié",
@@ -210,7 +205,7 @@ namespace Transconnect.UI
             UIAddSalarie uiAddSalarie = new UIAddSalarie(dataInitializer);
             uiAddSalarie.ShowDialog();
             Salarie nouveauSalarie = uiAddSalarie.AjouterSalarie();
-            if (nouveauSalarie == null) return; // Si l'utilisateur a annulé l'ajout
+            if (nouveauSalarie == null) return;
             salarieService.AjouterSalarie(nouveauSalarie, salaries);
             ChargerSalaries();
             DataPersistenceService.SaveSalaries(salaries);
@@ -222,7 +217,7 @@ namespace Transconnect.UI
             UIModifSalarie uiModifSalarie = new UIModifSalarie(dataInitializer, salarieAModifier);
             uiModifSalarie.ShowDialog();
             Salarie salarieModifie = uiModifSalarie.ModifierSalarie();
-            if (salarieModifie == null) return; // Si l'utilisateur a annulé la modification
+            if (salarieModifie == null) return;
             salarieService.ModifierSalarie(salarieAModifier, salarieModifie.NumeroSS, salarieModifie.Nom, salarieModifie.Prenom, salarieModifie.DateNaissance, salarieModifie.AdressePostale, salarieModifie.AdresseMail, salarieModifie.Telephone, salarieModifie.DateEntree, salarieModifie.Poste, salarieModifie.Salaire, new List<Salarie>());
             ChargerSalaries();
             DataPersistenceService.SaveSalaries(salaries);
@@ -253,20 +248,12 @@ namespace Transconnect.UI
 
         private void AjouterSubordonnes()
         {
-            if (dgvSalaries.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Veuillez d'abord sélectionner un employé qui sera le manager",
-                    "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             int selectedIndex = dgvSalaries.SelectedRows[0].Index;
             Salarie manager = salaries[selectedIndex];
 
             UISelectionSubordonnes formSelection = new UISelectionSubordonnes(dataInitializer, manager);
             formSelection.ShowDialog();
 
-            // Rafraîchir l'affichage après l'ajout de subordonnés
             ChargerSalaries();
             AfficherInfosSalarie();
         }
@@ -358,7 +345,6 @@ namespace Transconnect.UI
             this.Controls.Add(lblSalaire);
             this.Controls.Add(txtSalaire);
 
-            // Boutons
             btnAjouterSalarie = new Button
             {
                 Text = "Ajouter Salarie",
@@ -439,13 +425,11 @@ namespace Transconnect.UI
         private void InitializeComponents(Salarie salarieAModifier)
         {
 
-            // Configuration du formulaire
             this.Text = "Modifier un Salarie";
             this.Size = new Size(400, 500);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
-            // Champs de saisie
             Label numeroSSLabel = new Label { Text = "Numéro de Sécurité Sociale:", Location = new Point(20, 20) };
             txtNumeroSS = new TextBox { Location = new Point(150, 20), Width = 200 };
             this.Controls.Add(numeroSSLabel);
@@ -508,7 +492,6 @@ namespace Transconnect.UI
             this.Controls.Add(txtSalaire);
 
 
-            // Boutons
             btnModifierSalarie = new Button
             {
                 Text = "Modifier Salarie",
@@ -587,13 +570,11 @@ namespace Transconnect.UI
 
         private void InitializeComponents()
         {
-            // Configuration du formulaire
             this.Text = "Sélection des subordonnés";
             this.Size = new Size(600, 500);
             this.StartPosition = FormStartPosition.CenterParent;
             this.BackColor = Color.White;
 
-            // Information
             lblInfo = new Label
             {
                 Text = $"Sélectionnez les employés qui seront subordonnés à {manager.Prenom} {manager.Nom}",
@@ -603,7 +584,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(lblInfo);
 
-            // DataGridView pour afficher les employés
             dgvEmployes = new DataGridView
             {
                 Location = new Point(20, 50),
@@ -618,7 +598,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(dgvEmployes);
 
-            // Boutons
             btnAjouter = new Button
             {
                 Text = "Ajouter comme subordonnés",
@@ -659,7 +638,6 @@ namespace Transconnect.UI
             dtEmployes.Columns.Add("Prenom", typeof(string));
             dtEmployes.Columns.Add("Poste", typeof(string));
 
-            // Filtrer pour ne pas montrer le manager lui-même ni ses subordonnés actuels
             foreach (var salarie in salaries)
             {
                 if (salarie.NumeroSS != manager.NumeroSS)
@@ -673,13 +651,6 @@ namespace Transconnect.UI
 
         private void AjouterSubordonnes()
         {
-            if (dgvEmployes.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Veuillez sélectionner au moins un employé",
-                    "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             List<Salarie> nouveauxSubordonnes = new List<Salarie>();
 
             foreach (DataGridViewRow row in dgvEmployes.SelectedRows)
@@ -695,19 +666,15 @@ namespace Transconnect.UI
 
             if (nouveauxSubordonnes.Count > 0)
             {
-                // Mettre à jour la relation dans le modèle et le graphe
                 foreach (var subordonne in nouveauxSubordonnes)
                 {
-                    // Ajouter à la liste des subordonnés du manager
                     manager.AddSubordonnes(subordonne);
 
-                    // Mettre à jour le graphe
                     Noeud noeudManager = dataInitializer.grapheSalarie.TrouverNoeudParSalarieNumeroSS(manager.NumeroSS);
                     Noeud noeudSubordonne = dataInitializer.grapheSalarie.TrouverNoeudParSalarieNumeroSS(subordonne.NumeroSS);
 
                     if (noeudManager != null && noeudSubordonne != null)
                     {
-                        // Vérifier si le lien existe déjà
                         bool lienExiste = false;
                         foreach (var lien in dataInitializer.grapheSalarie.Liens)
                         {
@@ -721,7 +688,6 @@ namespace Transconnect.UI
 
                         if (!lienExiste)
                         {
-                            // Ajouter un nouveau lien orienté (manager -> subordonné)
                             Lien nouveauLien = new Lien(noeudManager, noeudSubordonne, null, true);
                             dataInitializer.grapheSalarie.AjouterLien(nouveauLien);
                         }
@@ -756,19 +722,15 @@ namespace Transconnect.UI
 
             if (subordonnesASupprimer.Count > 0)
             {
-                // Mettre à jour la relation dans le modèle et le graphe
                 foreach (var subordonne in subordonnesASupprimer)
                 {
-                    // Supprimer de la liste des subordonnés du manager
                     manager.SupSubordonnes(subordonne);
 
-                    // Mettre à jour le graphe
                     Noeud noeudManager = dataInitializer.grapheSalarie.TrouverNoeudParSalarieNumeroSS(manager.NumeroSS);
                     Noeud noeudSubordonne = dataInitializer.grapheSalarie.TrouverNoeudParSalarieNumeroSS(subordonne.NumeroSS);
 
                     if (noeudManager != null && noeudSubordonne != null)
                     {
-                        // Supprimer le lien entre le manager et le subordonné
                         Lien lienASupprimer = dataInitializer.grapheSalarie.Liens.Find(l => l.Noeud1 == noeudManager && l.Noeud2 == noeudSubordonne);
                         if (lienASupprimer != null)
                         {

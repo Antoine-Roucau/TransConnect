@@ -27,7 +27,6 @@ namespace Transconnect.UI
 
         private void InitializeComponents()
         {
-            // Configuration du formulaire
             this.Text = "TransConnect - Gestion de Transport Routier";
             this.Size = new Size(1000, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -35,7 +34,6 @@ namespace Transconnect.UI
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
 
-            // Titre
             lblTitre = new Label
             {
                 Text = "TransConnect",
@@ -47,13 +45,11 @@ namespace Transconnect.UI
             };
             this.Controls.Add(lblTitre);
 
-            // Création des boutons avec une taille et un espacement uniformes
             int btnWidth = 200;
             int btnHeight = 60;
             int startY = 120;
             int spacing = 80;
 
-            // Bouton Clients
             btnClients = new Button
             {
                 Text = "Gestion des Clients",
@@ -66,7 +62,6 @@ namespace Transconnect.UI
             btnClients.Click += (s, e) => OuvrirGestionClients();
             this.Controls.Add(btnClients);
 
-            // Bouton Salariés
             btnSalaries = new Button
             {
                 Text = "Gestion des Salariés",
@@ -79,7 +74,6 @@ namespace Transconnect.UI
             btnSalaries.Click += (s, e) => OuvrirGestionSalaries();
             this.Controls.Add(btnSalaries);
 
-            // Bouton Commandes
             btnCommandes = new Button
             {
                 Text = "Gestion des Commandes",
@@ -92,7 +86,6 @@ namespace Transconnect.UI
             btnCommandes.Click += (s, e) => OuvrirGestionCommandes();
             this.Controls.Add(btnCommandes);
 
-            // Bouton Statistiques
             btnStatistiques = new Button
             {
                 Text = "Statistiques",
@@ -105,7 +98,6 @@ namespace Transconnect.UI
             btnStatistiques.Click += (s, e) => OuvrirStatistiques();
             this.Controls.Add(btnStatistiques);
 
-            // Bouton Visualisation
             btnVisualisation = new Button
             {
                 Text = "Visualisation",
@@ -118,7 +110,6 @@ namespace Transconnect.UI
             btnVisualisation.Click += (s, e) => OuvrirVisualisation();
             this.Controls.Add(btnVisualisation);
 
-            // Bouton Quitter
             btnQuitter = new Button
             {
                 Text = "Quitter",

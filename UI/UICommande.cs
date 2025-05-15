@@ -57,13 +57,11 @@ namespace Transconnect.UI
 
         private void InitializeComponents()
         {
-            // Configuration du formulaire
             this.Text = "TransConnect - Gestion des Commandes";
             this.Size = new Size(1500, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
-            // TabControl
             tabCommandes = new TabControl
             {
                 Location = new Point(20, 20),
@@ -72,7 +70,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(tabCommandes);
 
-            // Tab Liste des commandes
             tabListeCommandes = new TabPage
             {
                 Text = "Liste des commandes",
@@ -80,7 +77,6 @@ namespace Transconnect.UI
             };
             tabCommandes.TabPages.Add(tabListeCommandes);
 
-            // DataGridView pour afficher les commandes
             dgvCommandes = new DataGridView
             {
                 Location = new Point(10, 10),
@@ -95,7 +91,6 @@ namespace Transconnect.UI
             };
             tabListeCommandes.Controls.Add(dgvCommandes);
 
-            // Boutons d'action pour les commandes
             btnAjouter = new Button
             {
                 Text = "Nouvelle commande",
@@ -166,7 +161,6 @@ namespace Transconnect.UI
             btnFermer.Click += (s, e) => this.Close();
             this.Controls.Add(btnFermer);
 
-            // Tab Nouvelle commande
             tabNouvelleCommande = new TabPage
             {
                 Text = "Nouvelle commande",
@@ -174,7 +168,6 @@ namespace Transconnect.UI
             };
             tabCommandes.TabPages.Add(tabNouvelleCommande);
 
-            // Contrôles pour la nouvelle commande
             TableLayoutPanel tableCommande = new TableLayoutPanel
             {
                 Location = new Point(10, 10),
@@ -186,7 +179,6 @@ namespace Transconnect.UI
             tableCommande.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
             tabNouvelleCommande.Controls.Add(tableCommande);
 
-            // Client
             tableCommande.Controls.Add(new Label { Text = "Client :", Font = new Font("Arial", 10, FontStyle.Bold) }, 0, 0);
             cmbClient = new ComboBox
             {
@@ -199,7 +191,6 @@ namespace Transconnect.UI
             }
             tableCommande.Controls.Add(cmbClient, 1, 0);
 
-            // Ville de départ
             tableCommande.Controls.Add(new Label { Text = "Ville de départ :", Font = new Font("Arial", 10, FontStyle.Bold) }, 0, 1);
             cmbVilleDepart = new ComboBox
             {
@@ -212,7 +203,6 @@ namespace Transconnect.UI
             }
             tableCommande.Controls.Add(cmbVilleDepart, 1, 1);
 
-            // Ville d'arrivée
             tableCommande.Controls.Add(new Label { Text = "Ville d'arrivée :", Font = new Font("Arial", 10, FontStyle.Bold) }, 0, 2);
             cmbVilleArrivee = new ComboBox
             {
@@ -225,7 +215,6 @@ namespace Transconnect.UI
             }
             tableCommande.Controls.Add(cmbVilleArrivee, 1, 2);
 
-            // Date
             tableCommande.Controls.Add(new Label { Text = "Date :", Font = new Font("Arial", 10, FontStyle.Bold) }, 0, 3);
             dtpDate = new DateTimePicker
             {
@@ -235,7 +224,6 @@ namespace Transconnect.UI
             };
             tableCommande.Controls.Add(dtpDate, 1, 3);
 
-            // Véhicule
             tableCommande.Controls.Add(new Label { Text = "Véhicule :", Font = new Font("Arial", 10, FontStyle.Bold) }, 0, 4);
             cmbVehicule = new ComboBox
             {
@@ -251,7 +239,6 @@ namespace Transconnect.UI
             }
             tableCommande.Controls.Add(cmbVehicule, 1, 4);
 
-            // Chauffeur
             tableCommande.Controls.Add(new Label { Text = "Chauffeur :", Font = new Font("Arial", 10, FontStyle.Bold) }, 0, 5);
             cmbChauffeur = new ComboBox
             {
@@ -267,7 +254,6 @@ namespace Transconnect.UI
             }
             tableCommande.Controls.Add(cmbChauffeur, 1, 5);
 
-            // Prix estimé
             tableCommande.Controls.Add(new Label { Text = "Prix estimé :", Font = new Font("Arial", 10, FontStyle.Bold) }, 0, 6);
             lblPrix = new Label
             {
@@ -276,7 +262,6 @@ namespace Transconnect.UI
             };
             tableCommande.Controls.Add(lblPrix, 1, 6);
 
-            // Bouton de calcul d'itinéraire
             btnCalculerItineraire = new Button
             {
                 Text = "Calculer l'itinéraire",
@@ -287,7 +272,6 @@ namespace Transconnect.UI
             btnCalculerItineraire.Click += (s, e) => CalculerItineraire();
             tabNouvelleCommande.Controls.Add(btnCalculerItineraire);
 
-            // Bouton d'enregistrement
             btnEnregistrer = new Button
             {
                 Text = "Enregistrer la commande",
@@ -298,7 +282,6 @@ namespace Transconnect.UI
             btnEnregistrer.Click += (s, e) => EnregistrerCommande();
             tabNouvelleCommande.Controls.Add(btnEnregistrer);
 
-            // Panel pour l'itinéraire
             pnlItineraire = new Panel
             {
                 Location = new Point(10, 360),
@@ -308,7 +291,6 @@ namespace Transconnect.UI
             };
             tabNouvelleCommande.Controls.Add(pnlItineraire);
 
-            // Tab Itinéraire
             tabItineraire = new TabPage
             {
                 Text = "Visualisation des itinéraires",
@@ -316,7 +298,6 @@ namespace Transconnect.UI
             };
             tabCommandes.TabPages.Add(tabItineraire);
 
-            // Placeholder pour la visualisation des itinéraires
             Label lblPlaceholder = new Label
             {
                 Text = "Cette page permettra de visualiser les itinéraires sur une carte.",
@@ -369,7 +350,7 @@ namespace Transconnect.UI
             UIModifCommande uiModifCommande = new UIModifCommande(dataInitializer, commandeAModifier);
             uiModifCommande.ShowDialog();
             Commande commandeModifie = uiModifCommande.ModifierCommande();
-            if (commandeModifie == null) return; // Si l'utilisateur a annulé la modification
+            if (commandeModifie == null) return;
             commandeService.ModifierCommande(commandeAModifier.Id, commandeModifie);
             ChargerCommandes();
             DataPersistenceService.SaveCommandes(commandes);
@@ -429,18 +410,10 @@ namespace Transconnect.UI
         private void EnregistrerCommande()
         {
 
-            // Vérifier que tous les champs requis sont remplis
             if (cmbClient.SelectedIndex == -1 || cmbVilleDepart.SelectedIndex == -1 || cmbVilleArrivee.SelectedIndex == -1 ||
                 cmbVehicule.SelectedIndex == -1 || cmbChauffeur.SelectedIndex == -1)
             {
                 MessageBox.Show("Veuillez remplir tous les champs requis", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Vérifier que le prix a été calculé
-            if (lblPrix.Text == "- €")
-            {
-                MessageBox.Show("Veuillez calculer l'itinéraire pour obtenir le prix", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -524,13 +497,6 @@ namespace Transconnect.UI
 
         private void CalculerItineraire()
         {
-            // Placeholder pour calculer l'itinéraire d'une nouvelle commande
-            if (cmbVilleDepart.SelectedIndex == -1 || cmbVilleArrivee.SelectedIndex == -1)
-            {
-                MessageBox.Show("Veuillez sélectionner les villes de départ et d'arrivée", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             if (cmbVilleDepart.SelectedItem.ToString() == cmbVilleArrivee.SelectedItem.ToString())
             {
                 MessageBox.Show("Les villes de départ et d'arrivée doivent être différentes", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -539,7 +505,6 @@ namespace Transconnect.UI
 
             pnlItineraire.Controls.Clear();
 
-            // Simulation de calcul d'itinéraire
             string villeDepart = cmbVilleDepart.SelectedItem.ToString();
             string villeArrivee = cmbVilleArrivee.SelectedItem.ToString();
             List<Noeud> itineraire = Dijkstra.TrouverCheminLePlusCourt(dataInitializer.grapheVille, dataInitializer.grapheVille.TrouverNoeudVille(villeDepart), dataInitializer.grapheVille.TrouverNoeudVille(villeArrivee));
@@ -555,10 +520,8 @@ namespace Transconnect.UI
             Graphe graphe = dataInitializer.grapheVille;
 
 
-            // Distance 
             decimal distance =Convert.ToDecimal(CalculDistance.CalculerDistanceTotale(graphe,Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee)))) ;
 
-            // Afficher l'itinéraire
             Label lblTrajet = new Label
             {
                 Text = $"Trajet: {villeDepart} → {villeArrivee}",
@@ -626,14 +589,7 @@ namespace Transconnect.UI
 
         private void AfficherCarteVilles()
         {
-            try
-            {
-                dataInitializer.AfficherGrapheVilleGraphique();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erreur lors de l'affichage de la carte: {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            dataInitializer.AfficherGrapheVilleGraphique();
         }
         #endregion
     }
@@ -662,7 +618,6 @@ namespace Transconnect.UI
         private void InitializeComponents(Commande commandeAModifier)
         {
 
-            // Configuration du formulaire
             this.Text = "Modifier une Commande";
             this.Size = new Size(400, 500);
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -726,7 +681,6 @@ namespace Transconnect.UI
             txtVehicule.Text = commandeAModifier.Vehicule.Immatriculation.ToString();
             this.Controls.Add(txtVehicule);
 
-            // Boutons
             btnModifierClient = new Button
             {
                 Text = "Modifier Commande",

@@ -41,13 +41,11 @@ namespace Transconnect.UI
 
         private void InitializeComponents()
         {
-            // Configuration du formulaire
             this.Text = "TransConnect - Gestion des Clients";
             this.Size = new Size(1500, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
-            // Labels
             lblTri = new Label
             {
                 Text = "Trier par :",
@@ -64,7 +62,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(lblRecherche);
 
-            // Combobox pour le tri
             cmbTri = new ComboBox
             {
                 Location = new Point(100, 20),
@@ -76,7 +73,6 @@ namespace Transconnect.UI
             cmbTri.SelectedIndexChanged += (s, e) => TrierClients();
             this.Controls.Add(cmbTri);
 
-            // Champ de recherche
             txtRecherche = new TextBox
             {
                 Location = new Point(590, 20),
@@ -93,7 +89,6 @@ namespace Transconnect.UI
             btnRechercher.Click += (s, e) => RechercherClients();
             this.Controls.Add(btnRechercher);
 
-            // DataGridView pour afficher les clients
             dgvClients = new DataGridView
             {
                 Location = new Point(20, 60),
@@ -109,7 +104,6 @@ namespace Transconnect.UI
             dgvClients.SelectionChanged += (s, e) => AfficherCommandesClient();
             this.Controls.Add(dgvClients);
 
-            // Panel pour afficher les commandes du client
             pnlCommandes = new Panel
             {
                 Location = new Point(20, 470),
@@ -119,7 +113,6 @@ namespace Transconnect.UI
             };
             this.Controls.Add(pnlCommandes);
 
-            // Boutons d'action
             btnAjouter = new Button
             {
                 Text = "Ajouter un client",
@@ -182,24 +175,23 @@ namespace Transconnect.UI
 
         private void TrierClients()
         {
-            if (cmbTri.SelectedIndex == 0) // Nom
+            if (cmbTri.SelectedIndex == 0)
             {
                 dtClients = clientService.TrierClientsParNom(dtClients);
             }
-            else if (cmbTri.SelectedIndex == 1) // Ville
+            else if (cmbTri.SelectedIndex == 1)
             {
                 dtClients = clientService.TrierClientsParVille(dtClients);
             }
-            else if (cmbTri.SelectedIndex == 2) // Montant
+            else if (cmbTri.SelectedIndex == 2)
             {
                 dtClients = clientService.TrierClientsParMontant(dtClients);
             }
-            else if (cmbTri.SelectedIndex == 3) // Date de Naissance
+            else if (cmbTri.SelectedIndex == 3)
             {
                 dtClients = clientService.TrierClientsParDateNaissance(dtClients);
             }
             
-            // Mettre à jour le DataGridView avec les données triées
             dgvClients.DataSource = dtClients;
         }
 
@@ -219,7 +211,6 @@ namespace Transconnect.UI
 
         private void AfficherCommandesClient()
         {
-            // Placeholder pour afficher les commandes du client sélectionné
             if (dgvClients.SelectedRows.Count == 0) return;
 
             pnlCommandes.Controls.Clear();
@@ -267,7 +258,7 @@ namespace Transconnect.UI
             UIAddClient uiAddClient = new UIAddClient(dataInitializer);
             uiAddClient.ShowDialog();
             Client nouveauClient = uiAddClient.AjouterClient();
-            if (nouveauClient == null) return; // Si l'utilisateur a annulé l'ajout
+            if (nouveauClient == null) return;
             clientService.AjouterClient(nouveauClient, clients);
             ChargerClients();
             DataPersistenceService.SaveClients(clients);
@@ -279,7 +270,7 @@ namespace Transconnect.UI
             UIModifClient uiModifClient = new UIModifClient(dataInitializer,clientAModifier);
             uiModifClient.ShowDialog();
             Client clientModifie = uiModifClient.ModifierClient();
-            if (clientModifie == null) return; // Si l'utilisateur a annulé la modification
+            if (clientModifie == null) return;
             clientService.ModifierClient(clientAModifier, clientModifie, clients);
             ChargerClients();
             DataPersistenceService.SaveClients(clients);
@@ -315,13 +306,11 @@ namespace Transconnect.UI
 
         private void InitializeComponents()
         {
-            // Configuration du formulaire
             this.Text = "Ajouter un Client";
             this.Size = new Size(400, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
-            // Champs de saisie
             Label numeroSSLabel = new Label { Text = "Numéro de Sécurité Sociale:", Location = new Point(20, 20) };
             txtNumeroSS = new TextBox { Location = new Point(150, 20), Width = 200 };
             this.Controls.Add(numeroSSLabel);
@@ -358,7 +347,6 @@ namespace Transconnect.UI
             this.Controls.Add(lblTelephone);
             this.Controls.Add(txtTelephone);
 
-            // Boutons
             btnAjouterClient = new Button
             {
                 Text = "Ajouter Client",
@@ -427,14 +415,11 @@ namespace Transconnect.UI
 
         private void InitializeComponents(Client clientAModifier)
         {
-        
-            // Configuration du formulaire
             this.Text = "Modifier un Client";
             this.Size = new Size(400, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
 
-            // Champs de saisie
             Label numeroSSLabel = new Label { Text = "Numéro de Sécurité Sociale:", Location = new Point(20, 20) };
             txtNumeroSS = new TextBox { Location = new Point(150, 20), Width = 200 };
             this.Controls.Add(numeroSSLabel);
@@ -478,7 +463,6 @@ namespace Transconnect.UI
             txtTelephone.Text = clientAModifier.Telephone;
             this.Controls.Add(txtTelephone);
 
-            // Boutons
             btnModifierClient = new Button
             {
                 Text = "Modifier Client",

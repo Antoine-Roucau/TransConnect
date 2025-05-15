@@ -324,7 +324,6 @@ namespace Transconnect.UI
                 chemin.Add(noeud.Entite.ToString());
             }
 
-            // Afficher les résultats dans un tableau
             int yPos = 80;
             
             Label lblAlgo = new Label { Text = "Algorithme :", Font = new Font("Arial", 10, FontStyle.Bold), Location = new Point(10, yPos), Size = new Size(150, 20) };
@@ -367,7 +366,6 @@ namespace Transconnect.UI
             BellmanFord bellmanFordNB = new BellmanFord(graphe);
             bellmanFordNB.CalculerPlusCourtsChemins(graphe.TrouverNoeudVille(villeDepart));
 
-            // Afficher des détails appropriés selon l'algorithme
             switch (algorithme) {
                 case "Dijkstra":
                     txtDetails.Text = "L'algorithme de Dijkstra a exploré " + Dijkstra.TrouverCheminLePlusCourt(graphe, graphe.TrouverNoeudVille(villeDepart), graphe.TrouverNoeudVille(villeArrivee)).Count() + " nœuds avant de trouver le chemin optimal.\r\n";
@@ -416,7 +414,6 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("COMPARAISON DES ALGORITHMES DE PLUS COURT CHEMIN\n\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
             
-            // Résumé des algorithmes
             rtbComparaison.SelectionFont = new Font("Arial", 11, FontStyle.Bold);
             rtbComparaison.AppendText("1. RÉSUMÉ DES ALGORITHMES\n\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
@@ -450,7 +447,6 @@ namespace Transconnect.UI
             rtbComparaison.AppendText("- Complexité temporelle: O(V³)\n");
             rtbComparaison.AppendText("- Complexité spatiale: O(V²)\n\n");
         
-            // Tests de performance
             rtbComparaison.SelectionFont = new Font("Arial", 11, FontStyle.Bold);
             rtbComparaison.AppendText("2. TESTS DE PERFORMANCE\n\n");
             rtbComparaison.SelectionFont = new Font("Arial", 10);
