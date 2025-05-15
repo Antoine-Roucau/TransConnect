@@ -10,7 +10,6 @@ namespace Transconnect.Services
     {
         public DataTable GetClientsDF(List<Client> clientList)
         {
-            // Création du Dataframe
             DataTable dfClient = new DataTable();
             dfClient.Columns.Add("Numéro de Sécurité Sociale", typeof(string));
             dfClient.Columns.Add("Nom", typeof(string));
@@ -21,7 +20,6 @@ namespace Transconnect.Services
             dfClient.Columns.Add("Téléphone", typeof(string));
             dfClient.Columns.Add("Montant Achats Cumulés", typeof(decimal));
 
-            // Remplissage du Dataframe
             foreach (Client c in clientList)
             {
                 dfClient.Rows.Add(c.NumeroSS, c.Nom, c.Prenom, c.DateNaissance, c.AdressePostale, c.AdresseMail, c.Telephone, c.MontantTotalAchats);

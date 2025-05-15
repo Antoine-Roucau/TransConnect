@@ -21,7 +21,6 @@ namespace Transconnect.Algorithms.PlusCourtChemin
 
             Stopwatch chrono = Stopwatch.StartNew();
 
-            // Dictionnaires pour stocker les distances et les prédecesseurs
             Dictionary<Gra.Noeud, double> distances = new Dictionary<Gra.Noeud, double>();
             Dictionary<Gra.Noeud, Gra.Noeud> predecesseurs = new Dictionary<Gra.Noeud, Gra.Noeud>();
             
@@ -33,10 +32,8 @@ namespace Transconnect.Algorithms.PlusCourtChemin
                 predecesseurs[noeud] = null;
             }
             
-            // La distance de la source est 0
             distances[source] = 0;
 
-            // Liste des noeuds non visités
             var nonVisites = new List<Gra.Noeud>(graphe.Noeuds);
 
             while (nonVisites.Count > 0)

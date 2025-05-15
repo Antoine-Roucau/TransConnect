@@ -13,7 +13,6 @@ namespace Transconnect.Services
             graphe = grapheInitial;
         }
 
-        // Ajouter une relation hiérarchique
         public void AjouterRelation(Salarie manager, Salarie subordonne)
         {
             if (!graphe.ContainsKey(manager))
@@ -27,7 +26,6 @@ namespace Transconnect.Services
             }
         }
 
-        // Supprimer une relation hiérarchique
         public void SupprimerRelation(Salarie manager, Salarie subordonne)
         {
             if (graphe.ContainsKey(manager))
@@ -36,7 +34,6 @@ namespace Transconnect.Services
             }
         }
 
-        // Obtenir les subordonnés directs d’un salarié
         public List<Salarie> ObtenirSubordonnes(Salarie manager)
         {
             if (graphe.ContainsKey(manager))
@@ -61,7 +58,7 @@ namespace Transconnect.Services
             {
                 if (s == subordonne)
                 {
-                    return true; // subordonné direct trouvé
+                    return true; 
                 }
                 // Appel récursif : cherche dans les subordonnés du subordonné
             if (EstSubordonne(s, subordonne))
@@ -69,7 +66,6 @@ namespace Transconnect.Services
                     return true; // subordonné indirect trouvé
                 }
             }
-            // Aucun lien trouvé
             return false;
         }
 

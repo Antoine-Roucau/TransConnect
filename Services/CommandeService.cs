@@ -75,8 +75,7 @@ namespace Transconnect.Services
 
         public List<Commande> CommandesTrieesParClient(string nomClient)
         {
-            return _commandes.FindAll(c => c.Client != null &&
-                                          c.Client.Nom.Equals(nomClient, StringComparison.OrdinalIgnoreCase));
+            return _commandes.FindAll(c => c.Client != null && c.Client.Nom.Equals(nomClient, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
